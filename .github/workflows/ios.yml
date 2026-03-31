@@ -1,0 +1,77 @@
+name: iOS CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  lint:
+    name: SwiftLint
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run SwiftLint
+        run: swiftlint
+
+  build:
+    name: Build
+    runs-on: macos-latest
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build app
+        run: |
+          xcodebuild build \
+            -scheme CarHunt \
+            -project CarHunt.xcodeproj \
+            -destination 'platform=iOS Simulator,name=iPhone 15'
+
+  test:
+    name: Run Tests
+    runs-on: macos-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test
+        env:
+          scheme: ${{ 'default' }}
+          platform: ${{ 'iOS Simulator' }}
+        run: |
+          # Проверяем, есть ли тесты
+          if xcodebuild -list | grep -q Tests; then
+            echo "Tests found. Running tests..."
+      
+            device=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
+      
+            if [ $scheme = default ]; then scheme=$(cat default); fi
+      
+            if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then
+              filetype_parameter="workspace"
+              file_to_build="`ls -A | grep -i \\.xcworkspace\$`"
+            else
+              filetype_parameter="project"
+              file_to_build="`ls -A | grep -i \\.xcodeproj\$`"
+            fi
+      
+            file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
+      
+            xcodebuild test-without-building \
+              -scheme "$scheme" \
+              -"$filetype_parameter" "$file_to_build" \
+              -destination "platform=$platform,name=$device"
+      
+          else
+            echo "No tests found. Skipping tests."
+          fi
