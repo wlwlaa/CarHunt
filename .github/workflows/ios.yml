@@ -34,7 +34,7 @@ jobs:
           xcodebuild build \
             -scheme CarHunt \
             -project CarHunt.xcodeproj \
-            -destination 'platform=iOS Simulator,name=iPhone 15'
+            -destination 'platform=iOS Simulator,name=iPhone 16'
 
   test:
     name: Run Tests
