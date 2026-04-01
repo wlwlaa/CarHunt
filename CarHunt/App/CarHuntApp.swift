@@ -1,10 +1,3 @@
-//
-//  CarHuntApp.swift
-//  CarHunt
-//
-//  Created by Андрей Гацко on 31.03.2026.
-//
-
 import SwiftUI
 import SwiftData
 
