@@ -137,7 +137,52 @@ struct CardView: View {
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
-        )
+        ),
+        CardUIModel(
+            id: 3,
+            carImage: UIImage(systemName: "car.fill")!,
+            make: "BMW",
+            model: "M4 Competition",
+            bodyType: .coupe,
+            numGrade: 742,
+            year: "2022",
+            power: 503,
+            engineType: "Petrol",
+            userName: "alex",
+            downVotes: 3,
+            notes: "Clean spec, spotted downtown.",
+            date: Date()
+        ),
+        CardUIModel(
+            id: 4,
+            carImage: UIImage(systemName: "car.fill")!,
+            make: "BMW",
+            model: "M4 Competition",
+            bodyType: .coupe,
+            numGrade: 742,
+            year: "2022",
+            power: 503,
+            engineType: "Petrol",
+            userName: "alex",
+            downVotes: 3,
+            notes: "Clean spec, spotted downtown.",
+            date: Date()
+        ),
+        CardUIModel(
+            id: 5,
+            carImage: UIImage(systemName: "car.fill")!,
+            make: "BMW",
+            model: "M4 Competition",
+            bodyType: .coupe,
+            numGrade: 742,
+            year: "2022",
+            power: 503,
+            engineType: "Petrol",
+            userName: "alex",
+            downVotes: 3,
+            notes: "Clean spec, spotted downtown.",
+            date: Date()
+        ),
     ]
 
 
