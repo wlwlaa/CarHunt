@@ -1,7 +1,9 @@
 import Foundation
+import SwiftUI
 
 struct CardUIModel {
     let id: Int
+    let carImage: UIImage
     let make: String
     let model: String
     let bodyType: BodyType
