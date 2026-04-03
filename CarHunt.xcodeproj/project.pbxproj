@@ -10,9 +10,23 @@
 		6526FFEB2F7C07E1000E1D58 /* CarHunt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CarHunt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D59030282F7EBBC00022EB3E /* Exceptions for "CarHunt" folder in "CarHunt" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Info.plist,
+			);
+			target = 6526FFEA2F7C07E1000E1D58 /* CarHunt */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6526FFED2F7C07E1000E1D58 /* CarHunt */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D59030282F7EBBC00022EB3E /* Exceptions for "CarHunt" folder in "CarHunt" target */,
+			);
 			path = CarHunt;
 			sourceTree = "<group>";
 		};
@@ -251,8 +265,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2W85XF4R9S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CarHunt/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "CarHunt needs camera access to capture cars for your collection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -287,8 +304,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2W85XF4R9S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CarHunt/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "CarHunt needs camera access to capture cars for your collection.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
