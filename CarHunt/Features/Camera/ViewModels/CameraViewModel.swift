@@ -6,6 +6,7 @@ final class CameraViewModel: ObservableObject {
     let cameraService = CameraService()
 
     @Published var isTorchOn = false
+
     private var didSetupCamera = false
 
     func setupCameraIfNeeded() {

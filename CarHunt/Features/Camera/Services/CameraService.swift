@@ -2,48 +2,53 @@ import Foundation
 import AVFoundation
 
 final class CameraService: NSObject {
-    let session = AVCaptureSession()
+    let previewSession = AVCaptureSession()
+
     private var videoDevice: AVCaptureDevice?
     private var isConfigured = false
 
     func configureIfNeeded() {
         guard !isConfigured else { return }
 
-        session.beginConfiguration()
-        session.sessionPreset = .photo
+        previewSession.beginConfiguration()
+        previewSession.sessionPreset = .photo
 
         guard
-            let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+            let device = AVCaptureDevice.default(
+                .builtInWideAngleCamera,
+                for: .video,
+                position: .back
+            ),
             let input = try? AVCaptureDeviceInput(device: device),
-            session.canAddInput(input)
+            previewSession.canAddInput(input)
         else {
-            session.commitConfiguration()
+            previewSession.commitConfiguration()
             return
         }
 
         videoDevice = device
 
-        if session.inputs.isEmpty {
-            session.addInput(input)
+        if previewSession.inputs.isEmpty {
+            previewSession.addInput(input)
         }
 
-        session.commitConfiguration()
+        previewSession.commitConfiguration()
         isConfigured = true
     }
 
     func start() {
-        guard !session.isRunning else { return }
+        guard !previewSession.isRunning else { return }
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.session.startRunning()
+            self?.previewSession.startRunning()
         }
     }
 
     func stop() {
-        guard session.isRunning else { return }
+        guard previewSession.isRunning else { return }
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.session.stopRunning()
+            self?.previewSession.stopRunning()
         }
     }
 

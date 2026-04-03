@@ -17,7 +17,7 @@ struct CameraView: View {
             VStack(spacing: 0) {
                 Spacer(minLength: 24)
 
-                CameraPreviewView(session: viewModel.cameraService.session)
+                CameraPreviewView(session: viewModel.cameraService.previewSession)
                     .frame(height: 470)
                     .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
                     .overlay(
@@ -65,6 +65,7 @@ struct CameraView: View {
         }
         .onAppear {
             viewModel.setupCameraIfNeeded()
+
             if isActive {
                 viewModel.startCamera()
             }

@@ -17,11 +17,14 @@ struct CameraPreviewView: UIViewRepresentable {
 }
 
 final class PreviewView: UIView {
-    override class var layerClass: AnyClass {
+    override static var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
     }
 
     var previewLayer: AVCaptureVideoPreviewLayer {
-        layer as! AVCaptureVideoPreviewLayer
+        guard let previewLayer = layer as? AVCaptureVideoPreviewLayer else {
+            fatalError("Expected AVCaptureVideoPreviewLayer")
+        }
+        return previewLayer
     }
 }
