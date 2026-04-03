@@ -1,6 +1,6 @@
 import Foundation
 
-enum CardSortType {
+enum CardSortType: Hashable {
     case dateNewest
     case dateOldest
     case yearNewest
@@ -19,6 +19,29 @@ enum CardSortType {
     case numgradeHighest
 }
 
+extension CardSortType: CaseIterable {
+    static var allCases: [CardSortType] {
+        [
+            .dateNewest,
+            .dateOldest,
+            .yearNewest,
+            .yearOldest,
+            .modelAtoZ,
+            .modelZtoA,
+            .makeAtoZ,
+            .makeZtoA,
+            .powerLowest,
+            .powerHighest,
+            .idLowest,
+            .idHighest,
+            .downVotesLowest,
+            .downVotesHighest,
+            .numgradeLowest,
+            .numgradeHighest
+        ]
+    }
+}
+
 extension CardSortType {
     var sortDescriptors: [SortDescriptor<CardDataModel>] {
         switch self {
@@ -35,41 +58,78 @@ extension CardSortType {
             return [SortDescriptor(\.year, order: .forward)]
         
         case .modelAtoZ:
-            return [SortDescriptor(\.model, order: .reverse)]
-            
-        case .modelZtoA:
             return [SortDescriptor(\.model, order: .forward)]
             
-        case .makeAtoZ:
-            return [SortDescriptor(\.make, order: .reverse)]
+        case .modelZtoA:
+            return [SortDescriptor(\.model, order: .reverse)]
             
-        case .makeZtoA:
+        case .makeAtoZ:
             return [SortDescriptor(\.make, order: .forward)]
             
-        case .powerLowest:
-            return [SortDescriptor(\.power, order: .reverse)]
+        case .makeZtoA:
+            return [SortDescriptor(\.make, order: .reverse)]
             
-        case .powerHighest:
+        case .powerLowest:
             return [SortDescriptor(\.power, order: .forward)]
             
-        case .idLowest:
-            return [SortDescriptor(\.id, order: .reverse)]
+        case .powerHighest:
+            return [SortDescriptor(\.power, order: .reverse)]
             
-        case .idHighest:
+        case .idLowest:
             return [SortDescriptor(\.id, order: .forward)]
             
-        case .downVotesLowest:
-            return [SortDescriptor(\.downVotes, order: .reverse)]
+        case .idHighest:
+            return [SortDescriptor(\.id, order: .reverse)]
             
-        case .downVotesHighest:
+        case .downVotesLowest:
             return [SortDescriptor(\.downVotes, order: .forward)]
             
+        case .downVotesHighest:
+            return [SortDescriptor(\.downVotes, order: .reverse)]
+            
         case .numgradeLowest:
-            return [SortDescriptor(\.numGrade, order: .reverse)]
+            return [SortDescriptor(\.numGrade, order: .forward)]
             
         case .numgradeHighest:
-            return [SortDescriptor(\.numGrade, order: .forward)]
+            return [SortDescriptor(\.numGrade, order: .reverse)]
         }
         
+    }
+
+    var title: String {
+        switch self {
+        case .dateNewest:
+            return "Date: Newest"
+        case .dateOldest:
+            return "Date: Oldest"
+        case .yearNewest:
+            return "Year: Newest"
+        case .yearOldest:
+            return "Year: Oldest"
+        case .modelAtoZ:
+            return "Model: A-Z"
+        case .modelZtoA:
+            return "Model: Z-A"
+        case .makeAtoZ:
+            return "Make: A-Z"
+        case .makeZtoA:
+            return "Make: Z-A"
+        case .powerLowest:
+            return "Power: Lowest"
+        case .powerHighest:
+            return "Power: Highest"
+        case .idLowest:
+            return "ID: Lowest"
+        case .idHighest:
+            return "ID: Highest"
+        case .downVotesLowest:
+            return "Downvotes: Lowest"
+        case .downVotesHighest:
+            return "Downvotes: Highest"
+        case .numgradeLowest:
+            return "Score: Lowest"
+        case .numgradeHighest:
+            return "Score: Highest"
+        }
     }
 }
