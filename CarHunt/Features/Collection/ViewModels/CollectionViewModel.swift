@@ -14,9 +14,9 @@ final class CardListViewModel: ObservableObject {
 
 // MARK: - repository
 extension CardListViewModel {
-    func loadCards() {
+    func loadCards(sortType: CardSortType = .dateNewest) {
         do {
-            cards = try storage.fetchCards()
+            cards = try storage.fetchCards(sortType: sortType)
         } catch {
             print("loading error: \(error)")
         }

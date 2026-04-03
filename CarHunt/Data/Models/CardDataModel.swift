@@ -3,7 +3,7 @@ import Foundation
 
 @Model
 class CardDataModel {
-    var id: Int
+    var id: UUID
     var carImage: Data
     var make: String
     var model: String
@@ -24,7 +24,7 @@ class CardDataModel {
         set { bodyTypeRaw = newValue.rawValue }
     }
     
-    init(id: Int,
+    init(id: UUID,
          carImage: Data,
          make: String,
          model: String,
