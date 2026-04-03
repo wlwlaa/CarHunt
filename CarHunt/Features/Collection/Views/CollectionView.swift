@@ -1,6 +1,17 @@
 import SwiftUI
+import SwiftData
 
 struct CollectionView: View {
+    @Environment(\.modelContext) private var context
+    @StateObject private var viewModel: CardListViewModel
+    
+    init(context: ModelContext) {
+        let storage = CardStorageManager(context: context)
+        _viewModel = StateObject(
+            wrappedValue: CardListViewModel(storage: storage)
+        )
+    }
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
@@ -26,8 +37,4 @@ struct CollectionView: View {
             .navigationTitle("Collection")
         }
     }
-}
-
-#Preview {
-    CollectionView()
 }

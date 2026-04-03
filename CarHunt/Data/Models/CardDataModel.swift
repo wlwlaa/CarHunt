@@ -7,7 +7,7 @@ class CardDataModel {
     var carImage: Data
     var make: String
     var model: String
-    var bodyType: BodyType
+    private var bodyTypeRaw: String
     var numGrade: Int
     var year: String?
     var power: Int?
@@ -17,12 +17,18 @@ class CardDataModel {
     var notes: String?
     var date: Date
     var longitude: Double?
-    var lontitude: Double?
+    var latitude: Double?
+    
+    var bodyType: BodyType {
+        get { BodyType(rawValue: bodyTypeRaw) ?? .empty }
+        set { bodyTypeRaw = newValue.rawValue }
+    }
     
     init(id: Int,
+         carImage: Data,
          make: String,
          model: String,
-         bodyType: BodyType,
+         bodyTypeRaw: String,
          numGrade: Int,
          year: String? = nil,
          power: Int? = nil,
@@ -32,11 +38,12 @@ class CardDataModel {
          notes: String? = nil,
          date: Date,
          longitude: Double? = nil,
-         lontitude: Double? = nil) {
+         latitude: Double? = nil) {
         self.id = id
+        self.carImage = carImage
         self.make = make
         self.model = model
-        self.bodyType = bodyType
+        self.bodyTypeRaw = bodyTypeRaw
         self.numGrade = numGrade
         self.year = year
         self.power = power
@@ -46,6 +53,6 @@ class CardDataModel {
         self.notes = notes
         self.date = date
         self.longitude = longitude
-        self.lontitude = lontitude
+        self.latitude = latitude
     }
 }

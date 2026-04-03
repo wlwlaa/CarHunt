@@ -1,13 +1,14 @@
-enum BodyType: String {
-    case saloon
-    case wagon
-    case convertible
-    case minivan
-    case suv
-    case allTerrainVehicle
-    case hatchback3Door
-    case hatchback5Door
-    case coupe
-    case roadster
-    case van
+enum BodyType: String, Codable {
+    case saloon = "Saloon"
+    case wagon = "Wagon"
+    case convertible = "Convertible"
+    case minivan = "Minivan"
+    case suv = "SUV"
+    case allTerrainVehicle = "All-Terrain Vehicle"
+    case hatchback3Door = "Hatchback (3-door)"
+    case hatchback5Door = "Hatchback (5-door)"
+    case coupe = "Coupe"
+    case roadster = "Roadster"
+    case van = "Van"
+    case empty = ""
 }
