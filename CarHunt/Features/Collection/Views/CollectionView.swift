@@ -21,37 +21,40 @@ struct CollectionView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 12) {
-                Picker("Sort", selection: sortBinding) {
-                    ForEach(CardSortType.allCases, id: \.self) { sortType in
-                        Text(sortType.title).tag(sortType)
-                    }
-                }
-                .pickerStyle(.menu)
-                .frame(maxWidth: .infinity, alignment: .leading)
-
+            Group {
                 if viewModel.cards.isEmpty {
                     ScrollView {
-                        emptyState
+                        VStack(alignment: .leading, spacing: 16) {
+                            header
+                            emptyState
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .refreshable {
                         await viewModel.refresh()
                     }
                 } else {
                     ScrollView {
-                        LazyVGrid(columns: columns, spacing: 12) {
-                            ForEach(viewModel.cards, id: \.id) { card in
-                                CardView(card: card.asUIModel)
+                        VStack(alignment: .leading, spacing: 8) {
+                            header
+
+                            LazyVGrid(columns: columns, spacing: 12) {
+                                ForEach(viewModel.cards, id: \.id) { card in
+                                    CardView(card: card.asUIModel)
+                                }
                             }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .refreshable {
                         await viewModel.refresh()
                     }
                 }
             }
-            .padding()
-            .navigationTitle("Collection")
+            .padding(.horizontal)
+            .padding(.top, 4)
+            .toolbar(.hidden, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .task {
                 viewModel.loadCards()
             }
@@ -70,6 +73,23 @@ struct CollectionView: View {
 }
 
 private extension CollectionView {
+    var header: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Collection")
+                .font(.system(size: 36, weight: .bold))
+
+            Picker("Sort", selection: sortBinding) {
+                ForEach(CardSortType.allCases, id: \.self) { sortType in
+                    Text(sortType.title).tag(sortType)
+                }
+            }
+            .pickerStyle(.menu)
+            .labelsHidden()
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
     var sortBinding: Binding<CardSortType> {
         Binding(
             get: { viewModel.selectedSortType },
@@ -90,8 +110,6 @@ private extension CollectionView {
 
     var emptyState: some View {
         VStack(spacing: 16) {
-            Spacer(minLength: 88)
-            
             Image(systemName: "tray")
                 .font(.system(size: 56))
                 .foregroundStyle(.gray)
@@ -122,10 +140,9 @@ private extension CollectionView {
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.isLoadingMockCards)
             #endif
-            
-            Spacer()
         }
         .frame(maxWidth: .infinity)
+        .padding(.top, 72)
     }
 }
 
