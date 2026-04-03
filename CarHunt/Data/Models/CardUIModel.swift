@@ -6,7 +6,7 @@ struct CardUIModel {
     let carImage: UIImage
     let make: String
     let model: String
-    let bodyType: BodyType.RawValue
+    let bodyType: BodyType
     let numGrade: Int
     let year: String?
     let power: Int?
