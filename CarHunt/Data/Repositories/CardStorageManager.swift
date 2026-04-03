@@ -9,9 +9,9 @@ final class CardStorageManager: CardStorage {
         self.context = context
     }
     
-    func fetchCards() throws -> [CardDataModel] {
+    func fetchCards(sortType: CardSortType) throws -> [CardDataModel] {
         let descriptor = FetchDescriptor<CardDataModel>(
-            sortBy: [SortDescriptor(\.date, order: .reverse)]
+            sortBy: sortType.sortDescriptors
         )
         return try context.fetch(descriptor)
     }
