@@ -4,7 +4,7 @@ import Foundation
 @Model
 class CardDataModel {
     var id: UUID
-    var carImage: Data
+    var carImage: String
     var make: String
     var model: String
     private var bodyTypeRaw: String
@@ -25,7 +25,7 @@ class CardDataModel {
     }
     
     init(id: UUID,
-         carImage: Data,
+         carImage: String,
          make: String,
          model: String,
          bodyTypeRaw: String,

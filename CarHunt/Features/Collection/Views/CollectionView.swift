@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import UIKit
 
 struct CollectionView: View {
     @StateObject private var viewModel: CardListViewModel
@@ -143,25 +142,5 @@ private extension CollectionView {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 72)
-    }
-}
-
-private extension CardDataModel {
-    var asUIModel: CardUIModel {
-        CardUIModel(
-            id: abs(id.hashValue),
-            carImage: UIImage(data: carImage) ?? UIImage(systemName: "car.fill") ?? UIImage(),
-            make: make,
-            model: model,
-            bodyType: bodyType,
-            numGrade: numGrade,
-            year: year,
-            power: power,
-            engineType: engineType,
-            userName: userName,
-            downVotes: downVotes,
-            notes: notes,
-            date: date
-        )
     }
 }

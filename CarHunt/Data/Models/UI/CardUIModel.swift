@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit
 
 struct CardUIModel {
     let id: Int
@@ -43,5 +44,26 @@ extension CardUIModel {
         default:
             return "N/A"
         }
+    }
+}
+
+extension CardDataModel {
+    // Decode base64 only at UI mapping boundary.
+    var asUIModel: CardUIModel {
+        CardUIModel(
+            id: abs(id.hashValue),
+            carImage: UIImage.fromBase64(carImage),
+            make: make,
+            model: model,
+            bodyType: bodyType,
+            numGrade: numGrade,
+            year: year,
+            power: power,
+            engineType: engineType,
+            userName: userName,
+            downVotes: downVotes,
+            notes: notes,
+            date: date
+        )
     }
 }

@@ -47,7 +47,7 @@ struct MockCardsNetworkService: NetworkService {
 
     func fetchCardsUI() async throws -> [CardUIModel] {
         let cardsDTO = try await fetchCardsDTO()
-        return cardsDTO.map { $0.toUIModel() }
+        return cardsDTO.map { $0.toDataModel().asUIModel }
     }
 
     func fetchCardsData() async throws -> [CardDataModel] {

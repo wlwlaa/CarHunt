@@ -1,13 +1,6 @@
 import Foundation
 
-// Base64 strings are stored in resource files to keep Swift sources lint-friendly.
-// Expected files:
-// - CarHunt/Resources/MockBase64/bmw.base64
-// - CarHunt/Resources/MockBase64/alfa.base64
-// - CarHunt/Resources/MockBase64/ford.base64
-// - CarHunt/Resources/MockBase64/lotus.base64
-// - CarHunt/Resources/MockBase64/porsche.base64
-// - CarHunt/Resources/MockBase64/ram.base64
+
 enum MockCardImageBase64 {
     static let bmw = load(named: "bmw")
     static let alfa = load(named: "alfa")
@@ -16,7 +9,7 @@ enum MockCardImageBase64 {
     static let porsche = load(named: "porsche")
     static let ram = load(named: "ram")
 
-    private static func load(named resourceName: String) -> String {
+    private static func load(named resourceName: String) -> String? {
         let url =
             Bundle.main.url(forResource: resourceName, withExtension: "base64", subdirectory: "MockBase64")
             ?? Bundle.main.url(forResource: resourceName, withExtension: "base64", subdirectory: "Resources/MockBase64")
@@ -24,7 +17,7 @@ enum MockCardImageBase64 {
 
         guard let url else {
             assertionFailure("Missing base64 resource: \(resourceName).base64")
-            return ""
+            return nil
         }
 
         do {
@@ -32,7 +25,7 @@ enum MockCardImageBase64 {
             return value.components(separatedBy: .whitespacesAndNewlines).joined()
         } catch {
             assertionFailure("Failed to read base64 resource \(resourceName): \(error)")
-            return ""
+            return nil
         }
     }
 }

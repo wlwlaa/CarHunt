@@ -1,5 +1,4 @@
 import Foundation
-import UIKit
 import CryptoKit
 
 struct CardDTO: Codable {
@@ -29,32 +28,10 @@ extension CardDTO {
         return stableHashInt
     }
 
-    func toUIModel() -> CardUIModel {
-        CardUIModel(
-            id: uiID,
-            carImage: resolvedImage,
-            make: make,
-            model: model,
-            bodyType: bodyType,
-            numGrade: numGrade,
-            year: year,
-            power: power,
-            engineType: engineType,
-            userName: "backend",
-            downVotes: downVotes,
-            notes: notes,
-            date: date
-        )
-    }
-
-    func toDataModel(imageCompressionQuality: CGFloat = 0.9) -> CardDataModel {
-        let imageData = resolvedImage.jpegData(compressionQuality: imageCompressionQuality)
-            ?? resolvedImage.pngData()
-            ?? Data()
-
+    func toDataModel() -> CardDataModel {
         return CardDataModel(
             id: stableUUID,
-            carImage: imageData,
+            carImage: normalizedBase64,
             make: make,
             model: model,
             bodyTypeRaw: bodyType.rawValue,
@@ -69,17 +46,6 @@ extension CardDTO {
             longitude: longitude,
             latitude: latitude
         )
-    }
-
-    private var resolvedImage: UIImage {
-        guard
-            let data = Data(base64Encoded: normalizedBase64, options: [.ignoreUnknownCharacters]),
-            let image = UIImage(data: data)
-        else {
-            return UIImage(systemName: "car.fill") ?? UIImage()
-        }
-
-        return image
     }
 
     private var normalizedBase64: String {
@@ -120,7 +86,7 @@ extension CardDTO {
     static let mockCards: [CardDTO] = [
         CardDTO(
             id: "1",
-            imageBase64: MockCardImageBase64.bmw,
+            imageBase64: MockCardImageBase64.bmw ?? "",
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
@@ -136,7 +102,7 @@ extension CardDTO {
         ),
         CardDTO(
             id: "2",
-            imageBase64: MockCardImageBase64.alfa,
+            imageBase64: MockCardImageBase64.alfa ?? "",
             make: "Alfa Romeo",
             model: "Giulia Quadrifoglio",
             bodyType: .saloon,
@@ -152,7 +118,7 @@ extension CardDTO {
         ),
         CardDTO(
             id: "3",
-            imageBase64: MockCardImageBase64.ford,
+            imageBase64: MockCardImageBase64.ford ?? "",
             make: "Ford",
             model: "Mustang GT",
             bodyType: .coupe,
@@ -168,7 +134,7 @@ extension CardDTO {
         ),
         CardDTO(
             id: "4",
-            imageBase64: MockCardImageBase64.lotus,
+            imageBase64: MockCardImageBase64.lotus ?? "",
             make: "Lotus",
             model: "Emira",
             bodyType: .coupe,
@@ -184,7 +150,7 @@ extension CardDTO {
         ),
         CardDTO(
             id: "5",
-            imageBase64: MockCardImageBase64.porsche,
+            imageBase64: MockCardImageBase64.porsche ?? "",
             make: "Porsche",
             model: "911 Carrera S",
             bodyType: .coupe,
@@ -200,7 +166,7 @@ extension CardDTO {
         ),
         CardDTO(
             id: "6",
-            imageBase64: MockCardImageBase64.ram,
+            imageBase64: MockCardImageBase64.ram ?? "",
             make: "RAM",
             model: "1500 TRX",
             bodyType: .allTerrainVehicle,
