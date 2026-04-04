@@ -36,13 +36,6 @@ struct RootTabView: View {
                 NavigationStack {
                     CardSettingRootView(router: router)
                         .navigationTitle("Card Settings")
-                        .toolbar {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button("Close") {
-                                    router.dismissPresented()
-                                }
-                            }
-                        }
                 }
             }
         }
