@@ -4,7 +4,7 @@ import Combine
 struct CameraView: View {
     let isActive: Bool
 
-    @StateObject var viewModel: CameraViewModel
+    @ObservedObject var viewModel: CameraViewModel
 
     var body: some View {
         ZStack {
@@ -102,7 +102,7 @@ struct CameraView: View {
 }
 
 #Preview {
-    let viewModel = CameraViewModel(router: CameraRouter())
+    let viewModel = CameraViewModel(router: AppRouter())
     CameraView(isActive: true, viewModel: viewModel)
         .preferredColorScheme(.dark)
 }

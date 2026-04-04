@@ -1,23 +1,17 @@
 import SwiftUI
+import Combine
 
+@MainActor
 struct CameraRootView: View {
-    @StateObject var router: CameraRouter
+    let isActive: Bool
+    @StateObject private var viewModel: CameraViewModel
+
+    init(isActive: Bool, router: any AppRouting) {
+        self.isActive = isActive
+        _viewModel = StateObject(wrappedValue: CameraViewModel(router: router))
+    }
 
     var body: some View {
-        NavigationStack(path: $router.path) {
-            CameraView(isActive: true,
-                       viewModel: CameraViewModel(router: router))
-                .environmentObject(router)
-                .navigationDestination(for: AppRoute.self) { route in
-                    switch route {
-                    case .camera:
-                        CameraView(isActive: true,
-                                   viewModel: CameraViewModel(router: router))
-
-                    case .cardSettings:
-                        CardSettingView()
-                    }
-                }
-        }
+        CameraView(isActive: isActive, viewModel: viewModel)
     }
 }
