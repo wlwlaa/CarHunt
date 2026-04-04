@@ -68,7 +68,7 @@ extension CardListViewModel {
         defer { isLoadingMockCards = false }
 
         do {
-            let existingCards = try storage.fetchCards(sortType: .idLowest)
+            let existingCards = try storage.fetchCards(sortType: .numgradeHighest)
             var existingIDs = Set(existingCards.map(\.id))
 
             let remoteCards = try await networkService.fetchCardsData()
