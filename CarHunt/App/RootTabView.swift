@@ -1,20 +1,14 @@
 import SwiftUI
 import SwiftData
 
-enum AppTab {
-    case camera
-    case collection
-}
-
 struct RootTabView: View {
     @Environment(\.modelContext) private var modelContext
-    @State private var selectedTab: AppTab = .camera
     @StateObject private var router = AppRouter()
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: $router.selectedTab) {
             CameraRootView(
-                isActive: selectedTab == .camera && router.presented == nil,
+                isActive: router.selectedTab == .camera && router.presented == nil,
                 router: router
             )
                 .tabItem {
@@ -35,9 +29,12 @@ struct RootTabView: View {
             case .camera:
                 EmptyView()
 
+            case .collection:
+                EmptyView()
+
             case .cardSettings:
                 NavigationStack {
-                    CardSettingView()
+                    CardSettingRootView(router: router)
                         .navigationTitle("Card Settings")
                         .toolbar {
                             ToolbarItem(placement: .topBarTrailing) {

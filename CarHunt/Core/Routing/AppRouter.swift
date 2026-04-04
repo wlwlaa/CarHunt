@@ -9,12 +9,15 @@ protocol AppRouting: AnyObject {
 
     func present(_ route: AppRoute)
     func dismissPresented()
+    func open(_ route: AppRoute)
 }
 
+@MainActor
 final class AppRouter: ObservableObject, AppRouting {
     @Published var path = NavigationPath()
 
     @Published var presented: AppRoute?
+    @Published var selectedTab: AppTab = .camera
 
     func push(_ route: AppRoute) {
         path.append(route)
@@ -35,5 +38,20 @@ final class AppRouter: ObservableObject, AppRouting {
 
     func dismissPresented() {
         presented = nil
+    }
+
+    func open(_ route: AppRoute) {
+        switch route {
+        case .camera:
+            dismissPresented()
+            selectedTab = .camera
+
+        case .collection:
+            dismissPresented()
+            selectedTab = .collection
+
+        case .cardSettings:
+            present(route)
+        }
     }
 }
