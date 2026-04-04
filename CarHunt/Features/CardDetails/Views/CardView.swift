@@ -1,14 +1,20 @@
 import SwiftUI
 
 struct CardView: View {
+    enum Style {
+        case compact
+        case expanded
+    }
+
     let card: CardUIModel
+    var style: Style = .compact
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Image(uiImage: card.carImage)
                 .resizable()
                 .scaledToFill()
-                .frame(height: 120)
+                .frame(height: style == .compact ? 120 : 300)
                 .frame(maxWidth: .infinity)
                 .clipped()
                 .cornerRadius(12)
@@ -17,28 +23,28 @@ struct CardView: View {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(card.make)
-                            .font(.caption)
+                            .font(style == .compact ? .caption : .title3)
                             .foregroundStyle(.secondary)
 
                         Text(card.model)
-                            .font(.headline)
-                            .lineLimit(1)
+                            .font(style == .compact ? .headline : .largeTitle.weight(.semibold))
+                            .lineLimit(style == .compact ? 1 : 2)
                     }
 
                     Spacer()
 
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(card.letterGrade)
-                            .font(.headline)
+                            .font(style == .compact ? .headline : .largeTitle.weight(.bold))
                             .fontWeight(.bold)
 
                         Text("\(card.numGrade)")
-                            .font(.caption)
+                            .font(style == .compact ? .caption : .title3)
                             .foregroundStyle(.secondary)
                     }
                 }
 
-                Text("\(String(describing: card.bodyType))")
+                Text(card.bodyType.rawValue.capitalized)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -62,8 +68,8 @@ struct CardView: View {
 
                 if let notes = card.notes, !notes.isEmpty {
                     Text(notes)
-                        .font(.caption)
-                        .lineLimit(2)
+                        .font(style == .compact ? .caption : .title3)
+                        .lineLimit(style == .compact ? 2 : nil)
                         .foregroundStyle(.primary)
                 }
             }
