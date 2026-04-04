@@ -1,19 +1,18 @@
 import Foundation
-import UIKit
 
 struct CarDraft {
     var imageData: Data?
 
-    var make: String = ""
-    var model: String = ""
-    var bodyType: BodyType = .empty
-    var numGrade: String = "0"
+    var make: String?
+    var model: String?
+    var bodyType: BodyType?
+    var numGrade: Int?
 
-    var year: String = ""
-    var power: String = ""
+    var year: String?
+    var power: Int?
 
-    var engineType: String = ""
-    var userName: String = "Alexey"
-    var downVotes: String = "0"
-    var notes: String = ""
+    var engineType: String?
+    var userName: String?
+    var downVotes: Int?
+    var notes: String?
 }

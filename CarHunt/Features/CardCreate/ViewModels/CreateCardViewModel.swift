@@ -1,6 +1,4 @@
-import Foundation
-import Combine
-import UIKit
+import SwiftUI
 
 final class CreateCardViewModel: ObservableObject {
     @Published var draft: CarDraft
@@ -10,80 +8,60 @@ final class CreateCardViewModel: ObservableObject {
     }
 
     var isSaveEnabled: Bool {
-        !draft.make.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !draft.model.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        draft.bodyType != .empty &&
-        !draft.engineType.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        normalized(draft.make) != nil &&
+        normalized(draft.model) != nil &&
+        draft.bodyType != nil &&
+        normalized(draft.engineType) != nil
     }
 
-    func updateYear(_ value: String) {
-        draft.year = value.filter(\.isNumber)
-    }
-
-    func updatePower(_ value: String) {
-        draft.power = value.filter(\.isNumber)
-    }
-
-    func updateGrade(_ value: String) {
-        draft.numGrade = value.filter(\.isNumber)
-    }
-
-    func updateDownVotes(_ value: String) {
-        draft.downVotes = value.filter(\.isNumber)
-    }
-
-    func buildCard() -> CardUIModel? {
-        guard
-            let imageData = draft.imageData,
-            let image = UIImage(data: imageData)
-        else {
-            return nil
-        }
-
-        let yearValue: String? = draft.year
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty ? nil : draft.year
-
-        let powerValue: Int? = Int(draft.power)
-        let gradeValue: Int = Int(draft.numGrade) ?? 0
-        let downVotesValue: Int = Int(draft.downVotes) ?? 0
-
-        let notesValue: String? = draft.notes
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty ? nil : draft.notes
-
-        return CardUIModel(
-            id: Int(Date().timeIntervalSince1970),
-            carImage: image,
-            make: draft.make.trimmingCharacters(in: .whitespacesAndNewlines),
-            model: draft.model.trimmingCharacters(in: .whitespacesAndNewlines),
-            bodyType: draft.bodyType,
-            numGrade: gradeValue,
-            year: yearValue,
-            power: powerValue,
-            engineType: draft.engineType.trimmingCharacters(in: .whitespacesAndNewlines),
-            userName: draft.userName.trimmingCharacters(in: .whitespacesAndNewlines),
-            downVotes: downVotesValue,
-            notes: notesValue,
-            date: Date()
+    func textBinding(
+        for keyPath: WritableKeyPath<CarDraft, String?>
+    ) -> Binding<String> {
+        Binding(
+            get: {
+                self.draft[keyPath: keyPath] ?? ""
+            },
+            set: { newValue in
+                let trimmed = newValue.trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                )
+                self.draft[keyPath: keyPath] = trimmed.isEmpty ? nil : newValue
+            }
         )
     }
 
-    func save() {
-        guard let card = buildCard() else {
-            print("Failed to build CardUIModel")
-            return
-        }
+    func numberBinding(
+        for keyPath: WritableKeyPath<CarDraft, Int?>
+    ) -> Binding<String> {
+        Binding(
+            get: {
+                guard let value = self.draft[keyPath: keyPath] else {
+                    return ""
+                }
+                return String(value)
+            },
+            set: { newValue in
+                let digits = newValue.filter(\.isNumber)
+                self.draft[keyPath: keyPath] = digits.isEmpty ? nil : Int(digits)
+            }
+        )
+    }
 
-        print("Card created:")
-        print("Make: \(card.make)")
-        print("Model: \(card.model)")
-        print("Body type: \(card.bodyType.rawValue)")
-        print("Year: \(card.year ?? "nil")")
-        print("Power: \(card.power.map(String.init) ?? "nil")")
-        print("Engine: \(card.engineType)")
-        print("User: \(card.userName)")
-        print("DownVotes: \(card.downVotes)")
-        print("Notes: \(card.notes ?? "nil")")
+    var bodyTypeBinding: Binding<BodyType> {
+        Binding(
+            get: {
+                self.draft.bodyType ?? .empty
+            },
+            set: { newValue in
+                self.draft.bodyType = newValue == .empty ? nil : newValue
+            }
+        )
+    }
+
+    private func normalized(_ value: String?) -> String? {
+        guard let value else { return nil }
+
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 }
