@@ -1,9 +1,10 @@
 import SwiftUI
+import Combine
 
 struct CameraView: View {
     let isActive: Bool
 
-    @StateObject private var viewModel = CameraViewModel()
+    @StateObject var viewModel: CameraViewModel
 
     var body: some View {
         ZStack {
@@ -101,6 +102,7 @@ struct CameraView: View {
 }
 
 #Preview {
-    CameraView(isActive: true)
+    let viewModel = CameraViewModel(router: CameraRouter())
+    CameraView(isActive: true, viewModel: viewModel)
         .preferredColorScheme(.dark)
 }

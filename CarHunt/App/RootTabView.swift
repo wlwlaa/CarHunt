@@ -8,10 +8,11 @@ enum AppTab {
 struct RootTabView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var selectedTab: AppTab = .camera
+    @StateObject private var router = CameraRouter()
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            CameraView(isActive: selectedTab == .camera)
+            CameraRootView(router: router)
                 .tabItem {
                     Label("Camera", systemImage: "camera")
                 }

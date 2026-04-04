@@ -4,10 +4,16 @@ import Combine
 
 final class CameraViewModel: ObservableObject {
     let cameraService = CameraService()
+    
+    private let router: CameraRouter
 
     @Published var isTorchOn = false
 
     private var didSetupCamera = false
+    
+    init(router: CameraRouter) {
+        self.router = router
+    }
 
     func setupCameraIfNeeded() {
         guard !didSetupCamera else { return }
@@ -25,6 +31,7 @@ final class CameraViewModel: ObservableObject {
 
     func capturePhoto() {
         print("Capture tapped")
+        router.push(.cardSettings)
     }
 
     func toggleTorch() {
