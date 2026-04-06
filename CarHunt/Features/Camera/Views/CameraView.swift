@@ -102,11 +102,7 @@ struct CameraView: View {
 #Preview {
     CameraView(
         isActive: true,
-        viewModel: CameraViewModel(router: MockCameraRouter())
+        viewModel: CameraViewModel(router: AppRouter())
     )
     .preferredColorScheme(.dark)
-}
-
-private struct MockCameraRouter: CameraRouting {
-    func routeToNextScreen() {}
 }
