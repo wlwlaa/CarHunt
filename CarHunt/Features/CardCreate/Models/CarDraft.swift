@@ -12,7 +12,5 @@ struct CarDraft {
     var power: Int?
 
     var engineType: String?
-    var userName: String?
-    var downVotes: Int?
     var notes: String?
 }
