@@ -2,12 +2,19 @@ import Foundation
 import AVFoundation
 import Combine
 
+@MainActor
 final class CameraViewModel: ObservableObject {
     let cameraService = CameraService()
+    
+    private let router: any AppRouting
 
     @Published var isTorchOn = false
 
     private var didSetupCamera = false
+    
+    init(router: any AppRouting) {
+        self.router = router
+    }
 
     func setupCameraIfNeeded() {
         guard !didSetupCamera else { return }
@@ -25,6 +32,7 @@ final class CameraViewModel: ObservableObject {
 
     func capturePhoto() {
         print("Capture tapped")
+        router.present(.cardSettings)
     }
 
     func toggleTorch() {

@@ -1,17 +1,16 @@
 import SwiftUI
-
-enum AppTab {
-    case camera
-    case collection
-}
+import SwiftData
 
 struct RootTabView: View {
     @Environment(\.modelContext) private var modelContext
-    @State private var selectedTab: AppTab = .camera
+    @StateObject private var router = AppRouter()
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            CameraView(isActive: selectedTab == .camera)
+        TabView(selection: $router.selectedTab) {
+            CameraRootView(
+                isActive: router.selectedTab == .camera && router.presented == nil,
+                router: router
+            )
                 .tabItem {
                     Label("Camera", systemImage: "camera")
                 }
@@ -24,6 +23,22 @@ struct RootTabView: View {
                 .tag(AppTab.collection)
         }
         .tint(.blue)
+        .environmentObject(router)
+        .sheet(item: $router.presented) { route in
+            switch route {
+            case .camera:
+                EmptyView()
+
+            case .collection:
+                EmptyView()
+
+            case .cardSettings:
+                NavigationStack {
+                    CardSettingRootView(router: router)
+                        .navigationTitle("Card Settings")
+                }
+            }
+        }
     }
 }
 
