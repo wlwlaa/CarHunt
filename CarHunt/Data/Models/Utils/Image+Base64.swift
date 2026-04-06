@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit
 
 extension Image {
     static func fromData(
@@ -36,5 +37,11 @@ extension Image {
         }
 
         return base64
+    }
+}
+
+extension Data {
+    func asImage() -> Image {
+        Image.fromBase64(base64EncodedString())
     }
 }
