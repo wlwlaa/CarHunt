@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
-struct CardUIModel {
+struct CardUIModel: Identifiable {
     let id: Int
     let carImage: UIImage
     let make: String
