@@ -2,11 +2,16 @@ import SwiftUI
 
 struct CreateCardView: View {
     @StateObject private var viewModel: CreateCardViewModel
+    let onSave: (CarDraft) -> Void
 
-    init(imageData: Data?) {
+    init(
+        imageData: Data?,
+        onSave: @escaping (CarDraft) -> Void = { _ in }
+    ) {
         _viewModel = StateObject(
             wrappedValue: CreateCardViewModel(imageData: imageData)
         )
+        self.onSave = onSave
     }
 
     var body: some View {
@@ -16,7 +21,7 @@ struct CreateCardView: View {
                 formSection
 
                 Button {
-                    viewModel.save()
+                    onSave(viewModel.draft)
                 } label: {
                     Text("Save Card")
                         .font(.headline)
@@ -79,62 +84,54 @@ struct CreateCardView: View {
 
     private var formSection: some View {
         VStack(spacing: 14) {
-            cardTextField(title: "Make *", text: $viewModel.draft.make)
-            cardTextField(title: "Model *", text: $viewModel.draft.model)
+            cardTextField(
+                title: "Make *",
+                text: viewModel.textBinding(for: \.make)
+            )
+
+            cardTextField(
+                title: "Model *",
+                text: viewModel.textBinding(for: \.model)
+            )
 
             bodyTypePicker
 
             cardTextField(
                 title: "Engine Type *",
-                text: $viewModel.draft.engineType
+                text: viewModel.textBinding(for: \.engineType)
             )
 
-            numericTextField(
+            cardTextField(
                 title: "Year",
-                text: $viewModel.draft.year,
-                onChange: viewModel.updateYear
+                text: viewModel.textBinding(for: \.year),
+                keyboardType: .numberPad
             )
 
             numericTextField(
                 title: "Power",
-                text: $viewModel.draft.power,
-                onChange: viewModel.updatePower
+                text: viewModel.numberBinding(for: \.power)
             )
 
             numericTextField(
                 title: "Grade",
-                text: $viewModel.draft.numGrade,
-                onChange: viewModel.updateGrade
+                text: viewModel.numberBinding(for: \.numGrade)
             )
 
             numericTextField(
                 title: "DownVotes",
-                text: $viewModel.draft.downVotes,
-                onChange: viewModel.updateDownVotes
+                text: viewModel.numberBinding(for: \.downVotes)
             )
 
             cardTextField(
                 title: "User Name",
-                text: $viewModel.draft.userName
+                text: viewModel.textBinding(for: \.userName)
             )
 
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Notes")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.white.opacity(0.8))
-
-                TextField(
-                    "Add notes",
-                    text: $viewModel.draft.notes,
-                    axis: .vertical
-                )
-                .padding(14)
-                .foregroundStyle(.white)
-                .background(Color.white.opacity(0.06))
-                .clipShape(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                )
-            }
+            cardTextField(
+                title: "Notes",
+                text: viewModel.textBinding(for: \.notes),
+                axis: .vertical
+            )
         }
     }
 
@@ -144,11 +141,8 @@ struct CreateCardView: View {
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(.white.opacity(0.8))
 
-            Picker("Body Type", selection: $viewModel.draft.bodyType) {
-                ForEach(
-                    BodyType.allCases.filter { $0 != .empty },
-                    id: \.self
-                ) { type in
+            Picker("Body Type", selection: viewModel.bodyTypeBinding) {
+                ForEach(BodyType.allCases, id: \.self) { type in
                     Text(type.displayName).tag(type)
                 }
             }
@@ -165,14 +159,17 @@ struct CreateCardView: View {
 
     private func cardTextField(
         title: String,
-        text: Binding<String>
+        text: Binding<String>,
+        keyboardType: UIKeyboardType = .default,
+        axis: Axis = .horizontal
     ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(.white.opacity(0.8))
 
-            TextField(title, text: text)
+            TextField(title, text: text, axis: axis)
+                .keyboardType(keyboardType)
                 .padding(14)
                 .foregroundStyle(.white)
                 .background(Color.white.opacity(0.06))
@@ -184,26 +181,13 @@ struct CreateCardView: View {
 
     private func numericTextField(
         title: String,
-        text: Binding<String>,
-        onChange: @escaping (String) -> Void
+        text: Binding<String>
     ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(.white.opacity(0.8))
-
-            TextField(title, text: text)
-                .keyboardType(.numberPad)
-                .padding(14)
-                .foregroundStyle(.white)
-                .background(Color.white.opacity(0.06))
-                .clipShape(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                )
-                .onChange(of: text.wrappedValue) { _, newValue in
-                    onChange(newValue)
-                }
-        }
+        cardTextField(
+            title: title,
+            text: text,
+            keyboardType: .numberPad
+        )
     }
 }
 
