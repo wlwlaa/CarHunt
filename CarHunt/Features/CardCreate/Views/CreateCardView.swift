@@ -4,6 +4,8 @@ struct CreateCardView: View {
     @StateObject private var viewModel: CreateCardViewModel
     let onSave: (CarDraft) -> Void
 
+    @Environment(\.dismiss) private var dismiss
+
     init(
         imageData: Data?,
         onSave: @escaping (CarDraft) -> Void = { _ in }
@@ -20,27 +22,10 @@ struct CreateCardView: View {
                 imageSection
                 formSection
 
-                Button {
-                    onSave(viewModel.draft)
-                } label: {
-                    Text("Save Card")
-                        .font(.headline)
-                        .foregroundStyle(.black)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(
-                            viewModel.isSaveEnabled
-                            ? Color.white
-                            : Color.gray.opacity(0.4)
-                        )
-                        .clipShape(
-                            RoundedRectangle(
-                                cornerRadius: 18,
-                                style: .continuous
-                            )
-                        )
+                HStack(spacing: 12) {
+                    cancelButton
+                    saveButton
                 }
-                .disabled(!viewModel.isSaveEnabled)
             }
             .padding(20)
         }
@@ -54,6 +39,43 @@ struct CreateCardView: View {
         )
         .navigationTitle("Create Card")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var cancelButton: some View {
+        Button {
+            dismiss()
+        } label: {
+            Text("Cancel")
+                .font(.headline)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(Color.white.opacity(0.1))
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                )
+        }
+    }
+
+    private var saveButton: some View {
+        Button {
+            onSave(viewModel.draft)
+        } label: {
+            Text("Save Card")
+                .font(.headline)
+                .foregroundStyle(.black)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(
+                    viewModel.isSaveEnabled
+                    ? Color.white
+                    : Color.gray.opacity(0.4)
+                )
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                )
+        }
+        .disabled(!viewModel.isSaveEnabled)
     }
 
     private var imageSection: some View {
@@ -95,11 +117,7 @@ struct CreateCardView: View {
             )
 
             bodyTypePicker
-
-            cardTextField(
-                title: "Engine Type *",
-                text: viewModel.textBinding(for: \.engineType)
-            )
+            engineTypePicker
 
             cardTextField(
                 title: "Year",
@@ -115,16 +133,6 @@ struct CreateCardView: View {
             numericTextField(
                 title: "Grade",
                 text: viewModel.numberBinding(for: \.numGrade)
-            )
-
-            numericTextField(
-                title: "DownVotes",
-                text: viewModel.numberBinding(for: \.downVotes)
-            )
-
-            cardTextField(
-                title: "User Name",
-                text: viewModel.textBinding(for: \.userName)
             )
 
             cardTextField(
@@ -144,6 +152,30 @@ struct CreateCardView: View {
             Picker("Body Type", selection: viewModel.bodyTypeBinding) {
                 ForEach(BodyType.allCases, id: \.self) { type in
                     Text(type.displayName).tag(type)
+                }
+            }
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(14)
+            .foregroundStyle(.white)
+            .background(Color.white.opacity(0.06))
+            .clipShape(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+            )
+        }
+    }
+
+    private var engineTypePicker: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Engine Type *")
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.white.opacity(0.8))
+
+            Picker("Engine Type", selection: viewModel.engineTypeBinding) {
+                Text("Not selected").tag("")
+
+                ForEach(viewModel.engineTypes, id: \.self) { type in
+                    Text(type).tag(type)
                 }
             }
             .pickerStyle(.menu)
