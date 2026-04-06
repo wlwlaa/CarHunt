@@ -1,10 +1,9 @@
 import Foundation
 import SwiftUI
-import UIKit
 
 struct CardUIModel: Identifiable {
     let id: Int
-    let carImage: UIImage
+    let carImage: Image
     let make: String
     let model: String
     let bodyType: BodyType
@@ -51,7 +50,7 @@ extension CardDataModel {
     var asUIModel: CardUIModel {
         CardUIModel(
             id: abs(id.hashValue),
-            carImage: UIImage.fromBase64(carImage),
+            carImage: Image.fromBase64(carImage),
             make: make,
             model: model,
             bodyType: bodyType,
