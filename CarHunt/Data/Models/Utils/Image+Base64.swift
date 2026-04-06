@@ -1,21 +1,21 @@
 import Foundation
-import UIKit
+import SwiftUI
 
-extension UIImage {
+extension Image {
     static func fromBase64(
         _ base64: String,
         fallbackSystemName: String = "car.fill"
-    ) -> UIImage {
+    ) -> Image {
         let normalizedBase64 = normalized(base64)
 
         guard
             let data = Data(base64Encoded: normalizedBase64, options: [.ignoreUnknownCharacters]),
             let image = UIImage(data: data)
         else {
-            return UIImage(systemName: fallbackSystemName) ?? UIImage()
+            return Image(systemName: fallbackSystemName)
         }
 
-        return image
+        return Image(uiImage: image)
     }
 
     private static func normalized(_ base64: String) -> String {
