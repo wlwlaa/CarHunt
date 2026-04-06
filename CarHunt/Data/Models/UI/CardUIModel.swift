@@ -12,7 +12,6 @@ struct CardUIModel {
     let year: String?
     let power: Int?
     let engineType: String
-    let userName: String
     let downVotes: Int
     let notes: String?
     let date: Date
@@ -60,7 +59,6 @@ extension CardDataModel {
             year: year,
             power: power,
             engineType: engineType,
-            userName: userName,
             downVotes: downVotes,
             notes: notes,
             date: date

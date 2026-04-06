@@ -39,7 +39,6 @@ extension CardDTO {
             year: year,
             power: power,
             engineType: engineType,
-            userName: "backend",
             downVotes: downVotes,
             notes: notes,
             date: date,
