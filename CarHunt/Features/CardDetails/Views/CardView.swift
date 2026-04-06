@@ -15,7 +15,7 @@ struct CardView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(height: style == .compact ? 120 : 300)
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: style == .compact ? .infinity : 350)
                 .clipped()
                 .cornerRadius(12)
 
@@ -89,21 +89,24 @@ struct CardView: View {
 }
 
 
-#Preview {
-    CardView(card: CardUIModel(
-        id: 1,
-        carImage: UIImage(systemName: "car.fill")!,
+#Preview("Expanded") {
+    CardView(card: CardDTO(
+        id: "1",
+        imageBase64: MockCardImageBase64.bmw ?? "",
         make: "BMW",
         model: "M4 Competition",
         bodyType: .coupe,
         numGrade: 742,
+        engineType: "Petrol",
+        downVotes: 2,
+        date: Date(timeIntervalSince1970: 1_726_444_800),
         year: "2022",
         power: 503,
-        engineType: "Petrol",
-        downVotes: 3,
-        notes: "Clean spec, spotted downtown.",
-        date: Date()
-    ))
+        notes: "Stock look, clean condition.",
+        longitude: 37.6173,
+        latitude: 55.7558
+    ).toDataModel().asUIModel, style: .expanded
+    )
 }
 
 #Preview("Many cards") {
