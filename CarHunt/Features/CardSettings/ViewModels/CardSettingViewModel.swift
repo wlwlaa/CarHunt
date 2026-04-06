@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+@MainActor
 final class CardSettingViewModel: ObservableObject {
     private let router: any AppRouting
 
