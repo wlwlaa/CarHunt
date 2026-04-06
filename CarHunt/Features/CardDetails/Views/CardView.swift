@@ -94,7 +94,6 @@ struct CardView: View {
         year: "2022",
         power: 503,
         engineType: "Petrol",
-        userName: "alex",
         downVotes: 3,
         notes: "Clean spec, spotted downtown.",
         date: Date()
@@ -118,7 +117,6 @@ struct CardView: View {
             year: "2022",
             power: 503,
             engineType: "Petrol",
-            userName: "alex",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -133,7 +131,6 @@ struct CardView: View {
             year: "2022",
             power: 503,
             engineType: "Petrol",
-            userName: "alex",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -148,7 +145,6 @@ struct CardView: View {
             year: "2022",
             power: 503,
             engineType: "Petrol",
-            userName: "alex",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -163,7 +159,6 @@ struct CardView: View {
             year: "2022",
             power: 503,
             engineType: "Petrol",
-            userName: "alex",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -178,7 +173,6 @@ struct CardView: View {
             year: "2022",
             power: 503,
             engineType: "Petrol",
-            userName: "alex",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
