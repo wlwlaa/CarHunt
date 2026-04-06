@@ -2,8 +2,7 @@ import SwiftUI
 
 struct CameraView: View {
     let isActive: Bool
-
-    @StateObject private var viewModel = CameraViewModel()
+    @ObservedObject var viewModel: CameraViewModel
 
     var body: some View {
         ZStack {
@@ -101,6 +100,13 @@ struct CameraView: View {
 }
 
 #Preview {
-    CameraView(isActive: true)
-        .preferredColorScheme(.dark)
+    CameraView(
+        isActive: true,
+        viewModel: CameraViewModel(router: MockCameraRouter())
+    )
+    .preferredColorScheme(.dark)
+}
+
+private struct MockCameraRouter: CameraRouting {
+    func routeToNextScreen() {}
 }

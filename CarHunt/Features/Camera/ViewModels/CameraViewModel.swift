@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 import Combine
+import SwiftUI
 
 final class CameraViewModel: ObservableObject {
     let cameraService = CameraService()
@@ -8,6 +9,11 @@ final class CameraViewModel: ObservableObject {
     @Published var isTorchOn = false
 
     private var didSetupCamera = false
+    private let router: any CameraRouting
+
+    init(router: any CameraRouting) {
+        self.router = router
+    }
 
     func setupCameraIfNeeded() {
         guard !didSetupCamera else { return }
@@ -24,7 +30,7 @@ final class CameraViewModel: ObservableObject {
     }
 
     func capturePhoto() {
-        print("Capture tapped")
+        router.routeToNextScreen()
     }
 
     func toggleTorch() {
