@@ -2,6 +2,17 @@ import Foundation
 import SwiftUI
 
 extension Image {
+    static func fromData(
+        _ data: Data,
+        fallbackSystemName: String = "car.fill"
+    ) -> Image {
+        guard let image = UIImage(data: data) else {
+            return Image(systemName: fallbackSystemName)
+        }
+
+        return Image(uiImage: image)
+    }
+
     static func fromBase64(
         _ base64: String,
         fallbackSystemName: String = "car.fill"

@@ -31,8 +31,14 @@ final class CameraViewModel: ObservableObject {
     }
 
     func capturePhoto() {
-        print("Capture tapped")
-        router.present(.cardSettings)
+        Task {
+            do {
+                let photoData = try await cameraService.capturePhoto()
+                router.presentCardSettings(with: .draft(withPhotoData: photoData))
+            } catch {
+                print("Photo capture error: \(error.localizedDescription)")
+            }
+        }
     }
 
     func toggleTorch() {

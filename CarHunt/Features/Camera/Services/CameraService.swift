@@ -1,17 +1,111 @@
 import Foundation
 import AVFoundation
-import SwiftUI
-import ImageIO
 
 final class CameraService: NSObject {
-    let previewSession = AVCaptureSession()
+    enum CaptureMode {
+        case live
+        case mock
+    }
 
+    let previewSession = AVCaptureSession()
+    var captureMode: CaptureMode = {
+#if targetEnvironment(simulator)
+        .mock
+#else
+        .live
+#endif
+    }()
+
+    private let sessionQueue = DispatchQueue(label: "CameraService.sessionQueue", qos: .userInitiated)
     private var videoDevice: AVCaptureDevice?
     private let photoOutput = AVCapturePhotoOutput()
     private var photoCaptureDelegate: PhotoCaptureDelegate?
     private var isConfigured = false
 
     func configureIfNeeded() {
+        sessionQueue.async { [weak self] in
+            self?.configureSessionIfNeeded()
+        }
+    }
+
+    func start() {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            self.configureSessionIfNeeded()
+            guard !self.previewSession.isRunning else { return }
+            self.previewSession.startRunning()
+        }
+    }
+
+    func stop() {
+        sessionQueue.async { [weak self] in
+            guard let self, self.previewSession.isRunning else { return }
+            self.previewSession.stopRunning()
+        }
+    }
+
+    func setTorch(isOn: Bool) {
+        guard let device = videoDevice, device.hasTorch else { return }
+
+        do {
+            try device.lockForConfiguration()
+
+            if isOn {
+                try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
+            } else {
+                device.torchMode = .off
+            }
+
+            device.unlockForConfiguration()
+        } catch {
+            print("Torch error: \(error.localizedDescription)")
+        }
+    }
+
+    func capturePhoto() async throws -> Data {
+        if captureMode == .mock {
+            return try mockPhotoData()
+        }
+
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data, Error>) in
+            sessionQueue.async { [weak self] in
+                guard let self else {
+                    continuation.resume(throwing: CameraCaptureError.invalidPhotoData)
+                    return
+                }
+
+                self.configureSessionIfNeeded()
+
+                if !self.isConfigured {
+                    continuation.resume(throwing: CameraCaptureError.sessionNotConfigured)
+                    return
+                }
+
+                if !self.previewSession.isRunning {
+                    self.previewSession.startRunning()
+                }
+
+                guard let connection = self.photoOutput.connection(with: .video), connection.isEnabled, connection.isActive else {
+                    continuation.resume(throwing: CameraCaptureError.videoConnectionUnavailable)
+                    return
+                }
+
+                let settings = AVCapturePhotoSettings()
+                settings.flashMode = .off
+                settings.maxPhotoDimensions = .init()
+
+                let delegate = PhotoCaptureDelegate { result in
+                    self.photoCaptureDelegate = nil
+                    continuation.resume(with: result)
+                }
+
+                self.photoCaptureDelegate = delegate
+                self.photoOutput.capturePhoto(with: settings, delegate: delegate)
+            }
+        }
+    }
+
+    private func configureSessionIfNeeded() {
         guard !isConfigured else { return }
 
         previewSession.beginConfiguration()
@@ -36,70 +130,57 @@ final class CameraService: NSObject {
             previewSession.addInput(input)
         }
 
-        if previewSession.canAddOutput(photoOutput), previewSession.outputs.isEmpty {
+        if previewSession.canAddOutput(photoOutput), photoOutput.connection(with: .video) == nil {
             previewSession.addOutput(photoOutput)
-            photoOutput.maxPhotoDimensions = .init(width: 3000, height: 4000)
+            photoOutput.maxPhotoDimensions = .init()
         }
 
         previewSession.commitConfiguration()
         isConfigured = true
     }
 
-    func start() {
-        guard !previewSession.isRunning else { return }
+    private func mockPhotoData() throws -> Data {
+        let mockBase64Images = ["bmw", "alfa", "ford", "lotus", "porsche", "ram"]
+            .compactMap(loadMockBase64(named:))
 
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.previewSession.startRunning()
+        guard
+            let selectedBase64 = mockBase64Images.randomElement(),
+            let data = Data(base64Encoded: normalizedBase64(selectedBase64), options: [.ignoreUnknownCharacters])
+        else {
+            throw CameraCaptureError.mockPhotoUnavailable
         }
+
+        return data
     }
 
-    func stop() {
-        guard previewSession.isRunning else { return }
+    private func loadMockBase64(named resourceName: String) -> String? {
+        let url =
+            Bundle.main.url(forResource: resourceName, withExtension: "base64", subdirectory: "MockBase64")
+            ?? Bundle.main.url(forResource: resourceName, withExtension: "base64", subdirectory: "Resources/MockBase64")
+            ?? Bundle.main.url(forResource: resourceName, withExtension: "base64")
 
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.previewSession.stopRunning()
+        guard let url,
+              let value = try? String(contentsOf: url, encoding: .utf8) else {
+            return nil
         }
+
+        return value.components(separatedBy: .whitespacesAndNewlines).joined()
     }
 
-    func setTorch(isOn: Bool) {
-        guard let device = videoDevice, device.hasTorch else { return }
-
-        do {
-            try device.lockForConfiguration()
-
-            if isOn {
-                try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
-            } else {
-                device.torchMode = .off
-            }
-
-            device.unlockForConfiguration()
-        } catch {
-            print("Torch error: \(error.localizedDescription)")
+    private func normalizedBase64(_ base64: String) -> String {
+        if base64.starts(with: "data:image"),
+           let commaIndex = base64.firstIndex(of: ",") {
+            return String(base64[base64.index(after: commaIndex)...])
         }
-    }
 
-    func capturePhoto() async throws -> Image {
-        try await withCheckedThrowingContinuation { continuation in
-            let settings = AVCapturePhotoSettings()
-            settings.flashMode = .off
-            settings.maxPhotoDimensions = .init(width: 3000, height: 4000)
-
-            let delegate = PhotoCaptureDelegate { result in
-                self.photoCaptureDelegate = nil
-                continuation.resume(with: result)
-            }
-
-            photoCaptureDelegate = delegate
-            photoOutput.capturePhoto(with: settings, delegate: delegate)
-        }
+        return base64
     }
 }
 
 private final class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegate {
-    private let completion: (Result<Image, Error>) -> Void
+    private let completion: (Result<Data, Error>) -> Void
 
-    init(completion: @escaping (Result<Image, Error>) -> Void) {
+    init(completion: @escaping (Result<Data, Error>) -> Void) {
         self.completion = completion
     }
 
@@ -114,25 +195,32 @@ private final class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegat
         }
 
         guard
-            let data = photo.fileDataRepresentation(),
-            let source = CGImageSourceCreateWithData(data as CFData, nil),
-            let cgImage = CGImageSourceCreateImageAtIndex(source, 0, nil)
+            let data = photo.fileDataRepresentation()
         else {
             completion(.failure(CameraCaptureError.invalidPhotoData))
             return
         }
 
-        completion(.success(Image(decorative: cgImage, scale: 1)))
+        completion(.success(data))
     }
 }
 
 private enum CameraCaptureError: LocalizedError {
     case invalidPhotoData
+    case sessionNotConfigured
+    case videoConnectionUnavailable
+    case mockPhotoUnavailable
 
     var errorDescription: String? {
         switch self {
         case .invalidPhotoData:
             return "Failed to create image from captured photo."
+        case .sessionNotConfigured:
+            return "Camera session is not configured yet."
+        case .videoConnectionUnavailable:
+            return "Camera video connection is unavailable."
+        case .mockPhotoUnavailable:
+            return "Mock photo data is unavailable."
         }
     }
 }
