@@ -10,7 +10,7 @@ struct CardUIModel: Identifiable {
     let numGrade: Int
     let year: String?
     let power: Int?
-    let engineType: String
+    let userName: String
     let downVotes: Int
     let notes: String?
     let date: Date
@@ -46,7 +46,6 @@ extension CardUIModel {
 }
 
 extension CardDataModel {
-    // Decode base64 only at UI mapping boundary.
     var asUIModel: CardUIModel {
         CardUIModel(
             id: abs(id.hashValue),
@@ -57,7 +56,7 @@ extension CardDataModel {
             numGrade: numGrade,
             year: year,
             power: power,
-            engineType: engineType,
+            userName: "",
             downVotes: downVotes,
             notes: notes,
             date: date

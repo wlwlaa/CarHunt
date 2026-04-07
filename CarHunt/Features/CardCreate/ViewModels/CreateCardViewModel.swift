@@ -5,13 +5,6 @@ import SwiftUI
 final class CreateCardViewModel: ObservableObject {
     @Published var draft: CarDraft
 
-    let engineTypes: [String] = [
-        "Petrol",
-        "Diesel",
-        "Electric",
-        "Hybrid"
-    ]
-
     init(imageData: Data?) {
         self.draft = CarDraft(imageData: imageData)
     }
@@ -19,8 +12,7 @@ final class CreateCardViewModel: ObservableObject {
     var isSaveEnabled: Bool {
         normalized(draft.make) != nil &&
         normalized(draft.model) != nil &&
-        draft.bodyType != nil &&
-        normalized(draft.engineType) != nil
+        draft.bodyType != nil
     }
 
     func textBinding(
@@ -63,17 +55,6 @@ final class CreateCardViewModel: ObservableObject {
             },
             set: { newValue in
                 self.draft.bodyType = newValue == .empty ? nil : newValue
-            }
-        )
-    }
-
-    var engineTypeBinding: Binding<String> {
-        Binding(
-            get: {
-                self.draft.engineType ?? ""
-            },
-            set: { newValue in
-                self.draft.engineType = newValue.isEmpty ? nil : newValue
             }
         )
     }

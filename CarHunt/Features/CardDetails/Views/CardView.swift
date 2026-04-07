@@ -1,21 +1,15 @@
 import SwiftUI
 
 struct CardView: View {
-    enum Style {
-        case compact
-        case expanded
-    }
-
     let card: CardUIModel
-    var style: Style = .compact
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             card.carImage
                 .resizable()
                 .scaledToFill()
-                .frame(height: style == .compact ? 120 : 300)
-                .frame(maxWidth: style == .compact ? .infinity : 350)
+                .frame(height: 120)
+                .frame(maxWidth: .infinity)
                 .clipped()
                 .cornerRadius(12)
 
@@ -23,28 +17,28 @@ struct CardView: View {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(card.make)
-                            .font(style == .compact ? .caption : .title3)
+                            .font(.caption)
                             .foregroundStyle(.secondary)
 
                         Text(card.model)
-                            .font(style == .compact ? .headline : .largeTitle.weight(.semibold))
-                            .lineLimit(style == .compact ? 1 : 2)
+                            .font(.headline)
+                            .lineLimit(1)
                     }
 
                     Spacer()
 
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(card.letterGrade)
-                            .font(style == .compact ? .headline : .largeTitle.weight(.bold))
+                            .font(.headline)
                             .fontWeight(.bold)
 
                         Text("\(card.numGrade)")
-                            .font(style == .compact ? .caption : .title3)
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
 
-                Text(card.bodyType.rawValue.capitalized)
+                Text(card.bodyType.displayName)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -61,15 +55,10 @@ struct CardView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                Text(card.engineType)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-
                 if let notes = card.notes, !notes.isEmpty {
                     Text(notes)
-                        .font(style == .compact ? .caption : .title3)
-                        .lineLimit(style == .compact ? 2 : nil)
+                        .font(.caption)
+                        .lineLimit(2)
                         .foregroundStyle(.primary)
                 }
             }
@@ -88,32 +77,29 @@ struct CardView: View {
     }
 }
 
-
-#Preview("Expanded") {
-    CardView(card: CardDTO(
-        id: "1",
-        imageBase64: MockCardImageBase64.bmw ?? "",
-        make: "BMW",
-        model: "M4 Competition",
-        bodyType: .coupe,
-        numGrade: 742,
-        engineType: "Petrol",
-        downVotes: 2,
-        date: Date(timeIntervalSince1970: 1_726_444_800),
-        year: "2022",
-        power: 503,
-        notes: "Stock look, clean condition.",
-        longitude: 37.6173,
-        latitude: 55.7558
-    ).toDataModel().asUIModel, style: .expanded
+#Preview {
+    CardView(
+        card: CardUIModel(
+            id: 1,
+            carImage: Image(systemName: "car.fill"),
+            make: "BMW",
+            model: "M4 Competition",
+            bodyType: .coupe,
+            numGrade: 742,
+            year: "2022",
+            power: 503,
+            downVotes: 3,
+            notes: "Clean spec, spotted downtown.",
+            date: Date()
+        )
     )
 }
 
 #Preview("Many cards") {
     let columns = [
-            GridItem(.flexible(), spacing: 12),
-            GridItem(.flexible(), spacing: 12)
-        ]
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
+    ]
 
     let cards = [
         CardUIModel(
@@ -125,7 +111,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -139,7 +124,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -153,7 +137,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -167,7 +150,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -181,18 +163,16 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
-        ),
+        )
     ]
-
 
     NavigationStack {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 12) {
-                ForEach(cards, id: \.id) { card in
+                ForEach(cards) { card in
                     CardView(card: card)
                 }
             }
@@ -200,5 +180,4 @@ struct CardView: View {
         }
         .navigationTitle("Collection")
     }
-        
 }

@@ -11,6 +11,5 @@ struct CarDraft {
     var year: String?
     var power: Int?
 
-    var engineType: String?
     var notes: String?
 }
