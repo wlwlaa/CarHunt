@@ -1,9 +1,7 @@
 import SwiftUI
-import Combine
 
 struct CameraView: View {
     let isActive: Bool
-
     @ObservedObject var viewModel: CameraViewModel
 
     var body: some View {
@@ -102,7 +100,9 @@ struct CameraView: View {
 }
 
 #Preview {
-    let viewModel = CameraViewModel(router: AppRouter())
-    CameraView(isActive: true, viewModel: viewModel)
-        .preferredColorScheme(.dark)
+    CameraView(
+        isActive: true,
+        viewModel: CameraViewModel(router: AppRouter())
+    )
+    .preferredColorScheme(.dark)
 }
