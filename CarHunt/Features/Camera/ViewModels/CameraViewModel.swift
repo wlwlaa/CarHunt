@@ -9,9 +9,9 @@ final class CameraViewModel: ObservableObject {
     @Published var isTorchOn = false
 
     private var didSetupCamera = false
-    private let router: any CameraRouting
+    private let router: any AppRouting
 
-    init(router: any CameraRouting) {
+    init(router: any AppRouting) {
         self.router = router
     }
 
@@ -30,7 +30,7 @@ final class CameraViewModel: ObservableObject {
     }
 
     func capturePhoto() {
-        router.routeToNextScreen()
+        router.present(.cardSettings)
     }
 
     func toggleTorch() {

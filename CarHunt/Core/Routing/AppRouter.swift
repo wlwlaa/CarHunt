@@ -55,9 +55,3 @@ final class AppRouter: ObservableObject, AppRouting {
         }
     }
 }
-
-extension AppRouter: CameraRouting {
-    func routeToNextScreen() {
-        present(.cardSettings)
-    }
-}
