@@ -1,7 +1,8 @@
 import Foundation
 import SwiftUI
+import UIKit
 
-struct CardUIModel: Identifiable {
+struct CardUIModel {
     let id: Int
     let carImage: Image
     let make: String
@@ -10,7 +11,6 @@ struct CardUIModel: Identifiable {
     let numGrade: Int
     let year: String?
     let power: Int?
-    let userName: String
     let downVotes: Int
     let notes: String?
     let date: Date
@@ -49,14 +49,13 @@ extension CardDataModel {
     var asUIModel: CardUIModel {
         CardUIModel(
             id: abs(id.hashValue),
-            carImage: Image.fromBase64(carImage),
+            carImage: UIImage.fromBase64(carImage),
             make: make,
             model: model,
             bodyType: bodyType,
             numGrade: numGrade,
             year: year,
             power: power,
-            userName: "",
             downVotes: downVotes,
             notes: notes,
             date: date

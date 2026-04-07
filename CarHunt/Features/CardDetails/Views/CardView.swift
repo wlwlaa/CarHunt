@@ -88,7 +88,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -112,7 +111,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -126,7 +124,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -140,7 +137,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -154,7 +150,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -168,7 +163,6 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
