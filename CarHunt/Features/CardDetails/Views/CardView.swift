@@ -38,7 +38,7 @@ struct CardView: View {
                     }
                 }
 
-                Text("\(String(describing: card.bodyType))")
+                Text(card.bodyType.displayName)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
