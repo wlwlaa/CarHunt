@@ -172,7 +172,7 @@ struct CardView: View {
     NavigationStack {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 12) {
-                ForEach(cards, id: \.id) { card in
+                ForEach(cards) { card in
                     CardView(card: card)
                 }
             }
