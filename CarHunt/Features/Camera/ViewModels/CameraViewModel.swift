@@ -5,13 +5,12 @@ import Combine
 @MainActor
 final class CameraViewModel: ObservableObject {
     let cameraService = CameraService()
-    
     private let router: any AppRouting
 
     @Published var isTorchOn = false
 
     private var didSetupCamera = false
-    
+
     init(router: any AppRouting) {
         self.router = router
     }
@@ -31,7 +30,6 @@ final class CameraViewModel: ObservableObject {
     }
 
     func capturePhoto() {
-        print("Capture tapped")
         router.present(.cardSettings)
     }
 

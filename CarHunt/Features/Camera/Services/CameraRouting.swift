@@ -1,3 +1,0 @@
-protocol CameraRouting {
-    func routeToNextScreen()
-}
