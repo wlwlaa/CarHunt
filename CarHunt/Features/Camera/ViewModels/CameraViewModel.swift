@@ -3,6 +3,7 @@ import AVFoundation
 import Combine
 import SwiftUI
 
+@MainActor
 final class CameraViewModel: ObservableObject {
     let cameraService = CameraService()
 
