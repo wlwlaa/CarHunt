@@ -8,7 +8,6 @@ struct CardDTO: Codable {
     let model: String
     let bodyType: BodyType
     let numGrade: Int
-    let engineType: String
     let downVotes: Int
     let date: Date
     let year: String?
@@ -29,7 +28,7 @@ extension CardDTO {
     }
 
     func toDataModel() -> CardDataModel {
-        return CardDataModel(
+        CardDataModel(
             id: stableUUID,
             carImage: normalizedBase64,
             make: make,
@@ -38,7 +37,6 @@ extension CardDTO {
             numGrade: numGrade,
             year: year,
             power: power,
-            engineType: engineType,
             downVotes: downVotes,
             notes: notes,
             date: date,
@@ -90,7 +88,6 @@ extension CardDTO {
             model: "M4 Competition",
             bodyType: .coupe,
             numGrade: 742,
-            engineType: "Petrol",
             downVotes: 2,
             date: Date(timeIntervalSince1970: 1_726_444_800),
             year: "2022",
@@ -106,7 +103,6 @@ extension CardDTO {
             model: "Giulia Quadrifoglio",
             bodyType: .saloon,
             numGrade: 688,
-            engineType: "Petrol",
             downVotes: 1,
             date: Date(timeIntervalSince1970: 1_726_358_400),
             year: "2021",
@@ -122,7 +118,6 @@ extension CardDTO {
             model: "Mustang GT",
             bodyType: .coupe,
             numGrade: 601,
-            engineType: "Petrol",
             downVotes: 4,
             date: Date(timeIntervalSince1970: 1_726_272_000),
             year: "2019",
@@ -138,7 +133,6 @@ extension CardDTO {
             model: "Emira",
             bodyType: .coupe,
             numGrade: 715,
-            engineType: "Petrol",
             downVotes: 0,
             date: Date(timeIntervalSince1970: 1_726_185_600),
             year: "2023",
@@ -154,7 +148,6 @@ extension CardDTO {
             model: "911 Carrera S",
             bodyType: .coupe,
             numGrade: 799,
-            engineType: "Petrol",
             downVotes: 1,
             date: Date(timeIntervalSince1970: 1_726_099_200),
             year: "2024",
@@ -170,7 +163,6 @@ extension CardDTO {
             model: "1500 TRX",
             bodyType: .allTerrainVehicle,
             numGrade: 645,
-            engineType: "Petrol",
             downVotes: 3,
             date: Date(timeIntervalSince1970: 1_726_012_800),
             year: "2022",

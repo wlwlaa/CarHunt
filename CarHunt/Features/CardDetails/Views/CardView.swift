@@ -55,11 +55,6 @@ struct CardView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                Text(card.engineType)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-
                 if let notes = card.notes, !notes.isEmpty {
                     Text(notes)
                         .font(.caption)
@@ -82,29 +77,30 @@ struct CardView: View {
     }
 }
 
-
 #Preview {
-    CardView(card: CardUIModel(
-        id: 1,
-        carImage: UIImage(systemName: "car.fill")!,
-        make: "BMW",
-        model: "M4 Competition",
-        bodyType: .coupe,
-        numGrade: 742,
-        year: "2022",
-        power: 503,
-        engineType: "Petrol",
-        downVotes: 3,
-        notes: "Clean spec, spotted downtown.",
-        date: Date()
-    ))
+    CardView(
+        card: CardUIModel(
+            id: 1,
+            carImage: UIImage(systemName: "car.fill")!,
+            make: "BMW",
+            model: "M4 Competition",
+            bodyType: .coupe,
+            numGrade: 742,
+            year: "2022",
+            power: 503,
+            userName: "",
+            downVotes: 3,
+            notes: "Clean spec, spotted downtown.",
+            date: Date()
+        )
+    )
 }
 
 #Preview("Many cards") {
     let columns = [
-            GridItem(.flexible(), spacing: 12),
-            GridItem(.flexible(), spacing: 12)
-        ]
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
+    ]
 
     let cards = [
         CardUIModel(
@@ -116,7 +112,7 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
+            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -130,7 +126,7 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
+            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -144,7 +140,7 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
+            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -158,7 +154,7 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
+            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
@@ -172,13 +168,12 @@ struct CardView: View {
             numGrade: 742,
             year: "2022",
             power: 503,
-            engineType: "Petrol",
+            userName: "",
             downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
-        ),
+        )
     ]
-
 
     NavigationStack {
         ScrollView {
@@ -191,5 +186,4 @@ struct CardView: View {
         }
         .navigationTitle("Collection")
     }
-        
 }

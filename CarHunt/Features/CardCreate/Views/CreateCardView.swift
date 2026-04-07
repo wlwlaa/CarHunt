@@ -117,7 +117,6 @@ struct CreateCardView: View {
             )
 
             bodyTypePicker
-            engineTypePicker
 
             cardTextField(
                 title: "Year",
@@ -152,30 +151,6 @@ struct CreateCardView: View {
             Picker("Body Type", selection: viewModel.bodyTypeBinding) {
                 ForEach(BodyType.allCases, id: \.self) { type in
                     Text(type.displayName).tag(type)
-                }
-            }
-            .pickerStyle(.menu)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(14)
-            .foregroundStyle(.white)
-            .background(Color.white.opacity(0.06))
-            .clipShape(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-            )
-        }
-    }
-
-    private var engineTypePicker: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Engine Type *")
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(.white.opacity(0.8))
-
-            Picker("Engine Type", selection: viewModel.engineTypeBinding) {
-                Text("Not selected").tag("")
-
-                ForEach(viewModel.engineTypes, id: \.self) { type in
-                    Text(type).tag(type)
                 }
             }
             .pickerStyle(.menu)
