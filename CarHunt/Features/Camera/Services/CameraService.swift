@@ -1,20 +1,21 @@
 import Foundation
 import AVFoundation
 
-final class CameraService: NSObject {
-    enum CaptureMode {
-        case live
-        case mock
-    }
+protocol CameraServiceProtocol: AnyObject {
+    var previewSession: AVCaptureSession { get }
+    var requiresCameraAuthorization: Bool { get }
+
+    func configureIfNeeded()
+    func start()
+    func stop()
+    func setTorch(isOn: Bool)
+    func capturePhoto() async throws -> Data
+}
+
+final class CameraService: NSObject, CameraServiceProtocol {
+    let requiresCameraAuthorization = true
 
     let previewSession = AVCaptureSession()
-    var captureMode: CaptureMode = {
-#if targetEnvironment(simulator)
-        .mock
-#else
-        .live
-#endif
-    }()
 
     private let sessionQueue = DispatchQueue(label: "CameraService.sessionQueue", qos: .userInitiated)
     private var videoDevice: AVCaptureDevice?
@@ -63,10 +64,6 @@ final class CameraService: NSObject {
     }
 
     func capturePhoto() async throws -> Data {
-        if captureMode == .mock {
-            return try mockPhotoData()
-        }
-
         return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data, Error>) in
             sessionQueue.async { [weak self] in
                 guard let self else {
@@ -138,43 +135,6 @@ final class CameraService: NSObject {
         previewSession.commitConfiguration()
         isConfigured = true
     }
-
-    private func mockPhotoData() throws -> Data {
-        let mockBase64Images = ["bmw", "alfa", "ford", "lotus", "porsche", "ram"]
-            .compactMap(loadMockBase64(named:))
-
-        guard
-            let selectedBase64 = mockBase64Images.randomElement(),
-            let data = Data(base64Encoded: normalizedBase64(selectedBase64), options: [.ignoreUnknownCharacters])
-        else {
-            throw CameraCaptureError.mockPhotoUnavailable
-        }
-
-        return data
-    }
-
-    private func loadMockBase64(named resourceName: String) -> String? {
-        let url =
-            Bundle.main.url(forResource: resourceName, withExtension: "base64", subdirectory: "MockBase64")
-            ?? Bundle.main.url(forResource: resourceName, withExtension: "base64", subdirectory: "Resources/MockBase64")
-            ?? Bundle.main.url(forResource: resourceName, withExtension: "base64")
-
-        guard let url,
-              let value = try? String(contentsOf: url, encoding: .utf8) else {
-            return nil
-        }
-
-        return value.components(separatedBy: .whitespacesAndNewlines).joined()
-    }
-
-    private func normalizedBase64(_ base64: String) -> String {
-        if base64.starts(with: "data:image"),
-           let commaIndex = base64.firstIndex(of: ",") {
-            return String(base64[base64.index(after: commaIndex)...])
-        }
-
-        return base64
-    }
 }
 
 private final class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegate {
@@ -205,7 +165,7 @@ private final class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegat
     }
 }
 
-private enum CameraCaptureError: LocalizedError {
+enum CameraCaptureError: LocalizedError {
     case invalidPhotoData
     case sessionNotConfigured
     case videoConnectionUnavailable

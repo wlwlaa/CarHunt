@@ -4,8 +4,7 @@ import Combine
 
 @MainActor
 final class CameraViewModel: ObservableObject {
-    let cameraService = CameraService()
-    
+    let cameraService: any CameraServiceProtocol
     private let router: any AppRouting
 
     @Published var isTorchOn = false
@@ -14,6 +13,12 @@ final class CameraViewModel: ObservableObject {
     
     init(router: any AppRouting) {
         self.router = router
+
+#if targetEnvironment(simulator)
+        self.cameraService = MockCameraService()
+#else
+        self.cameraService = CameraService()
+#endif
     }
 
     func setupCameraIfNeeded() {
@@ -52,6 +57,12 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func checkPermissionAndConfigure() {
+        guard cameraService.requiresCameraAuthorization else {
+            cameraService.configureIfNeeded()
+            cameraService.start()
+            return
+        }
+
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             cameraService.configureIfNeeded()
