@@ -65,6 +65,10 @@ final class AppRouter: ObservableObject, AppRouting {
             dismissPresented()
             selectedTab = .camera
 
+        case .map:
+            dismissPresented()
+            selectedTab = .map
+
         case .collection:
             dismissPresented()
             selectedTab = .collection

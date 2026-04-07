@@ -18,6 +18,25 @@ struct CardDTO: Codable {
 
 // MARK: - Mapping
 extension CardDTO {
+    init(dataModel: CardDataModel) {
+        self.init(
+            id: dataModel.id.uuidString,
+            imageBase64: dataModel.carImage,
+            make: dataModel.make,
+            model: dataModel.model,
+            bodyType: dataModel.bodyType,
+            numGrade: dataModel.numGrade,
+            engineType: dataModel.engineType,
+            downVotes: dataModel.downVotes,
+            date: dataModel.date,
+            year: dataModel.year,
+            power: dataModel.power,
+            notes: dataModel.notes,
+            longitude: dataModel.longitude,
+            latitude: dataModel.latitude
+        )
+    }
+
     var uiID: Int {
         if let intID = Int(id) {
             return intID
