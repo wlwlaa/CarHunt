@@ -22,67 +22,95 @@ struct CollectionView: View {
     
     var body: some View {
         NavigationStack {
-            Group {
-                if viewModel.cards.isEmpty {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 16) {
-                            header
-                            emptyState
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .refreshable {
-                        await viewModel.refresh()
-                    }
-                } else {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 8) {
-                            header
-
-                            LazyVGrid(columns: columns, spacing: 12) {
-                                ForEach(viewModel.cards, id: \.id) { card in
-                                    Button {
-                                        selectedCard = card.asUIModel
-                                    } label: {
-                                        CardView(card: card.asUIModel)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .refreshable {
-                        await viewModel.refresh()
-                    }
-                }
-            }
-            .padding(.horizontal)
-            .padding(.top, 4)
-            .toolbar(.hidden, for: .navigationBar)
-            .toolbarBackground(.hidden, for: .navigationBar)
-            .task {
-                viewModel.loadCards()
-            }
-            .alert(
-                "Collection Error",
-                isPresented: errorAlertBinding,
-                actions: {
-                    Button("OK", role: .cancel) {}
-                },
-                message: {
-                    Text(viewModel.errorMessage ?? "Unknown error")
-                }
-            )
-            .fullScreenCover(item: $selectedCard) { card in
-                CardDetailsModalView(card: card)
-                    .presentationBackground(.clear)
-            }
+            content
         }
     }
 }
 
 private extension CollectionView {
+    @ViewBuilder
+    var content: some View {
+        Group {
+            if viewModel.cards.isEmpty {
+                emptyCollectionScrollView
+            } else {
+                cardsScrollView
+            }
+        }
+        .padding(.horizontal)
+        .padding(.top, 4)
+        .toolbar(.hidden, for: .navigationBar)
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .task {
+            viewModel.loadCards()
+        }
+        .alert(
+            "Collection Error",
+            isPresented: errorAlertBinding,
+            actions: {
+                Button("OK", role: .cancel) {}
+            },
+            message: {
+                Text(viewModel.errorMessage ?? "Unknown error")
+            }
+        )
+        .fullScreenCover(item: $selectedCard) { card in
+            CardDetailsModalView(card: card)
+                .presentationBackground(.clear)
+        }
+    }
+
+    var emptyCollectionScrollView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                header
+                emptyState
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .refreshable {
+            await viewModel.refresh()
+        }
+    }
+
+    var cardsScrollView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 8) {
+                header
+                cardGrid
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .refreshable {
+            await viewModel.refresh()
+        }
+    }
+
+    var cardGrid: some View {
+        LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(viewModel.cards, id: \.id) { card in
+                cardButton(for: card)
+            }
+        }
+    }
+
+    func cardButton(for card: CardDataModel) -> some View {
+        let uiModel = card.asUIModel
+        return Button {
+            selectedCard = uiModel
+        } label: {
+            CardView(card: uiModel)
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button("Delete", systemImage: "trash", role: .destructive) {
+                Task {
+                    viewModel.deleteCard(card)
+                }
+            }
+        }
+    }
+
     var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Collection")
