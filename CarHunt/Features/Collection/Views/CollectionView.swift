@@ -3,6 +3,8 @@ import SwiftData
 
 struct CollectionView: View {
     @StateObject private var viewModel: CardListViewModel
+    @State private var selectedCard: CardUIModel?
+    
     private let columns = [
         GridItem(.flexible(), spacing: 12),
         GridItem(.flexible(), spacing: 12)
@@ -39,7 +41,12 @@ struct CollectionView: View {
 
                             LazyVGrid(columns: columns, spacing: 12) {
                                 ForEach(viewModel.cards, id: \.id) { card in
-                                    CardView(card: card.asUIModel)
+                                    Button {
+                                        selectedCard = card.asUIModel
+                                    } label: {
+                                        CardView(card: card.asUIModel)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
                             }
                         }
@@ -67,6 +74,10 @@ struct CollectionView: View {
                     Text(viewModel.errorMessage ?? "Unknown error")
                 }
             )
+            .fullScreenCover(item: $selectedCard) { card in
+                CardDetailsModalView(card: card)
+                    .presentationBackground(.clear)
+            }
         }
     }
 }
@@ -142,5 +153,39 @@ private extension CollectionView {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 72)
+    }
+}
+
+private struct CardDetailsModalView: View {
+    let card: CardUIModel
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .overlay(Color.black.opacity(0.2))
+                .ignoresSafeArea()
+                .onTapGesture {
+                    dismiss()
+                }
+
+            CardView(card: card)
+                .padding(.horizontal, 20)
+                .frame(maxWidth: 560)
+        }
+        .overlay(alignment: .topTrailing) {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                    .frame(width: 36, height: 36)
+                    .background(.ultraThinMaterial, in: Circle())
+            }
+            .padding(.top, 18)
+            .padding(.trailing, 18)
+        }
     }
 }

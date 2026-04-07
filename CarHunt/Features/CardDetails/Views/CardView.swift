@@ -5,7 +5,7 @@ struct CardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Image(uiImage: card.carImage)
+            card.carImage
                 .resizable()
                 .scaledToFill()
                 .frame(height: 120)
@@ -81,7 +81,7 @@ struct CardView: View {
     CardView(
         card: CardUIModel(
             id: 1,
-            carImage: UIImage(systemName: "car.fill")!,
+            carImage: Image(systemName: "car.fill"),
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
@@ -105,7 +105,7 @@ struct CardView: View {
     let cards = [
         CardUIModel(
             id: 1,
-            carImage: UIImage(systemName: "car.fill")!,
+            carImage: Image(systemName: "car.fill"),
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
@@ -119,7 +119,7 @@ struct CardView: View {
         ),
         CardUIModel(
             id: 2,
-            carImage: UIImage(systemName: "car.fill")!,
+            carImage: Image(systemName: "car.fill"),
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
@@ -133,7 +133,7 @@ struct CardView: View {
         ),
         CardUIModel(
             id: 3,
-            carImage: UIImage(systemName: "car.fill")!,
+            carImage: Image(systemName: "car.fill"),
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
@@ -147,7 +147,7 @@ struct CardView: View {
         ),
         CardUIModel(
             id: 4,
-            carImage: UIImage(systemName: "car.fill")!,
+            carImage: Image(systemName: "car.fill"),
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
@@ -161,7 +161,7 @@ struct CardView: View {
         ),
         CardUIModel(
             id: 5,
-            carImage: UIImage(systemName: "car.fill")!,
+            carImage: Image(systemName: "car.fill"),
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
