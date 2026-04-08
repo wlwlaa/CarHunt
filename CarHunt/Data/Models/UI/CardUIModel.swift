@@ -2,21 +2,38 @@ import Foundation
 import SwiftUI
 
 struct CardUIModel: Identifiable {
-    let id: Int
-    let carImage: Image
-    let make: String
-    let model: String
-    let bodyType: BodyType
-    let numGrade: Int
-    let year: String?
-    let power: Int?
-    let engineType: String
-    let downVotes: Int
-    let notes: String?
-    let date: Date
+    var id: Int
+    var carImage: Image
+    var make: String
+    var model: String
+    var bodyType: BodyType
+    var numGrade: Int
+    var year: String?
+    var power: Int?
+    var engineType: String
+    var downVotes: Int
+    var notes: String?
+    var date: Date
 }
 
 extension CardUIModel {
+    static var draft: CardUIModel {
+        CardUIModel(
+            id: 0,
+            carImage: Image(systemName: "photo"),
+            make: "",
+            model: "",
+            bodyType: .empty,
+            numGrade: 0,
+            year: nil,
+            power: nil,
+            engineType: "",
+            downVotes: 0,
+            notes: nil,
+            date: Date()
+        )
+    }
+
     var gradeAccentColor: Color? {
         switch numGrade {
         case 0...100:
