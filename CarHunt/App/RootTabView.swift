@@ -34,7 +34,10 @@ struct RootTabView: View {
 
             case .cardSettings:
                 NavigationStack {
-                    CardSettingsView(router: router)
+                    CardSettingsView(
+                        router: router,
+                        initialCard: router.presentedCardSettingsCard ?? .draft
+                    )
                 }
             }
         }

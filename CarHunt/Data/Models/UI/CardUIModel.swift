@@ -30,6 +30,12 @@ extension CardUIModel {
         )
     }
 
+    static func draft(withPhotoData photoData: Data) -> CardUIModel {
+        var card = Self.draft
+        card.carImage = Image.fromData(photoData)
+        return card
+    }
+
     var gradeAccentColor: Color? {
         switch numGrade {
         case 0...100:

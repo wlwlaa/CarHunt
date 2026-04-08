@@ -3,8 +3,10 @@ import SwiftUI
 struct CardSettingsView: View {
     @StateObject private var viewModel: CardSettingViewModel
 
-    init(router: any AppRouting) {
-        _viewModel = StateObject(wrappedValue: CardSettingViewModel(router: router))
+    init(router: any AppRouting, initialCard: CardUIModel = .draft) {
+        _viewModel = StateObject(
+            wrappedValue: CardSettingViewModel(router: router, initialCard: initialCard)
+        )
     }
 
     var body: some View {
