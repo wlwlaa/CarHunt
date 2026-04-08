@@ -198,7 +198,7 @@ private struct CardDetailsModalView: View {
                     dismiss()
                 }
 
-            CardView(card: card)
+            CardView(card: card, style: .expanded)
                 .padding(.horizontal, 20)
                 .frame(maxWidth: 560)
         }
