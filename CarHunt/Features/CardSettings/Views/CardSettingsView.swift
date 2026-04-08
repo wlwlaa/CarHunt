@@ -2,9 +2,12 @@ import SwiftUI
 
 struct CardSettingsView: View {
     @StateObject private var viewModel: CardSettingViewModel
+    @State private var flashingFields: Set<CardSettingViewModel.RequiredField> = []
+    @State private var flashTask: Task<Void, Never>?
 
     init(
         router: any AppRouting,
+        storage: CardStorage,
         initialCard: CardUIModel = .draft,
         initialPhotoData: Data? = nil,
         cardAutofillService: CardAutofillServicing? = nil
@@ -12,6 +15,7 @@ struct CardSettingsView: View {
         _viewModel = StateObject(
             wrappedValue: CardSettingViewModel(
                 router: router,
+                storage: storage,
                 initialCard: initialCard,
                 initialPhotoData: initialPhotoData,
                 cardAutofillService: cardAutofillService
@@ -41,22 +45,38 @@ struct CardSettingsView: View {
 
                 VStack(spacing: 20) {
                     settingsBlock(title: "Characteristics") {
-                        TextField("Make", text: card.make)
-                        TextField("Model", text: card.model)
-
-                        Picker("Body Type", selection: card.bodyType) {
-                            ForEach(BodyType.allCases, id: \.self) { type in
-                                Text(type.rawValue.isEmpty ? "Unknown" : type.rawValue)
-                                    .tag(type)
-                            }
+                        fieldContainer(for: .make) {
+                            TextField("Make", text: card.make)
+                                .textFieldStyle(.plain)
                         }
-                        .pickerStyle(.menu)
 
-                        TextField("Year", text: yearBinding)
-                            .keyboardType(.numberPad)
+                        fieldContainer(for: .model) {
+                            TextField("Model", text: card.model)
+                                .textFieldStyle(.plain)
+                        }
 
-                        TextField("Power (hp)", text: powerBinding)
-                            .keyboardType(.numberPad)
+                        fieldContainer(for: .bodyType) {
+                            Picker("Body Type", selection: card.bodyType) {
+                                ForEach(BodyType.allCases, id: \.self) { type in
+                                    Text(type.rawValue.isEmpty ? "Unknown" : type.rawValue)
+                                        .tag(type)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .tint(.primary)
+                        }
+
+                        regularFieldContainer {
+                            TextField("Year", text: yearBinding)
+                                .keyboardType(.numberPad)
+                                .textFieldStyle(.plain)
+                        }
+
+                        regularFieldContainer {
+                            TextField("Power (hp)", text: powerBinding)
+                                .keyboardType(.numberPad)
+                                .textFieldStyle(.plain)
+                        }
                     }
 
                     settingsBlock(title: "Rating") {
@@ -67,8 +87,11 @@ struct CardSettingsView: View {
                     }
 
                     settingsBlock(title: "Notes") {
-                        TextField("Notes", text: notesBinding, axis: .vertical)
-                            .lineLimit(3...8)
+                        regularFieldContainer {
+                            TextField("Notes", text: notesBinding, axis: .vertical)
+                                .lineLimit(3...8)
+                                .textFieldStyle(.plain)
+                        }
                     }
 
                     settingsBlock(title: "Meta") {
@@ -87,10 +110,16 @@ struct CardSettingsView: View {
             await viewModel.autofillIfNeeded()
         }
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: viewModel.validationFlashTrigger) { _ in
+            flashTask?.cancel()
+            flashTask = Task {
+                await flashInvalidFields(viewModel.invalidFieldsForFlash)
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Add") {
-                    viewModel.openCollection()
+                    viewModel.addCard()
                 }
             }
             ToolbarItem(placement: .topBarLeading) {
@@ -154,10 +183,81 @@ struct CardSettingsView: View {
             }
         )
     }
+
+    @ViewBuilder
+    private func fieldContainer<Content: View>(
+        for field: CardSettingViewModel.RequiredField,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        content()
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(fieldBackgroundColor(for: field))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(fieldBorderColor(for: field), lineWidth: 1.5)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    @ViewBuilder
+    private func regularFieldContainer<Content: View>(
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        content()
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.systemBackground))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(Color(.separator).opacity(0.2), lineWidth: 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private func fieldBackgroundColor(for field: CardSettingViewModel.RequiredField) -> Color {
+        flashingFields.contains(field) ? Color.red.opacity(0.18) : Color(.systemBackground)
+    }
+
+    private func fieldBorderColor(for field: CardSettingViewModel.RequiredField) -> Color {
+        flashingFields.contains(field) ? .red : Color(.separator).opacity(0.2)
+    }
+
+    @MainActor
+    private func flashInvalidFields(_ fields: Set<CardSettingViewModel.RequiredField>) async {
+        guard !fields.isEmpty else { return }
+
+        for _ in 0..<2 {
+            withAnimation(.easeInOut(duration: 0.11)) {
+                flashingFields.formUnion(fields)
+            }
+            try? await Task.sleep(nanoseconds: 120_000_000)
+
+            withAnimation(.easeInOut(duration: 0.11)) {
+                flashingFields.subtract(fields)
+            }
+            try? await Task.sleep(nanoseconds: 120_000_000)
+        }
+    }
 }
 
 #Preview {
     NavigationStack {
-        CardSettingsView(router: AppRouter())
+        CardSettingsView(
+            router: AppRouter(),
+            storage: PreviewCardStorage()
+        )
     }
+}
+
+private final class PreviewCardStorage: CardStorage {
+    func fetchCards(sortType: CardSortType) throws -> [CardDataModel] {
+        []
+    }
+
+    func addCard(_ card: CardDataModel) throws {}
+
+    func deleteCard(_ card: CardDataModel) throws {}
 }

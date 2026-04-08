@@ -43,6 +43,7 @@ struct RootTabView: View {
                 NavigationStack {
                     CardSettingsView(
                         router: router,
+                        storage: CardStorageManager(context: modelContext),
                         initialCard: router.presentedCardSettingsCard ?? .draft,
                         initialPhotoData: router.presentedCardSettingsPhotoData,
                         cardAutofillService: cardAutofillService

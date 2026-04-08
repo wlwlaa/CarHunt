@@ -45,24 +45,54 @@ struct CardFromImageResponse: Decodable {
 
 @MainActor
 final class CardSettingViewModel: ObservableObject {
+    enum RequiredField: Hashable {
+        case make
+        case model
+        case bodyType
+    }
+
     @Published var editableCard: CardUIModel
     @Published var isAutofillInProgress = false
+    @Published private(set) var invalidFieldsForFlash: Set<RequiredField> = []
+    @Published private(set) var validationFlashTrigger = 0
 
     private let router: any AppRouting
+    private let storage: CardStorage
     private let initialPhotoData: Data?
     private let cardAutofillService: CardAutofillServicing?
     private var didStartAutofill = false
 
     init(
         router: any AppRouting,
+        storage: CardStorage,
         initialCard: CardUIModel = .draft,
         initialPhotoData: Data? = nil,
         cardAutofillService: CardAutofillServicing? = nil
     ) {
         self.router = router
+        self.storage = storage
         self.editableCard = initialCard
         self.initialPhotoData = initialPhotoData
         self.cardAutofillService = cardAutofillService
+    }
+
+    func addCard() {
+        let invalidFields = requiredFieldsValidationResult
+        guard invalidFields.isEmpty else {
+            invalidFieldsForFlash = invalidFields
+            validationFlashTrigger += 1
+            return
+        }
+
+        editableCard.make = normalizedMake
+        editableCard.model = normalizedModel
+
+        do {
+            try storage.addCard(editableCard.asDataModel)
+            openCollection()
+        } catch {
+            print("Card save error: \(error.localizedDescription)")
+        }
     }
 
     func openCollection() {
@@ -101,5 +131,29 @@ final class CardSettingViewModel: ObservableObject {
         editableCard.notes = response.notes
         editableCard.year = Int(response.year.trimmingCharacters(in: .whitespacesAndNewlines))
         editableCard.bodyType = BodyType(rawValue: response.bodyType) ?? .empty
+    }
+
+    private var normalizedMake: String {
+        editableCard.make.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var normalizedModel: String {
+        editableCard.model.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var requiredFieldsValidationResult: Set<RequiredField> {
+        var result: Set<RequiredField> = []
+
+        if normalizedMake.isEmpty {
+            result.insert(.make)
+        }
+        if normalizedModel.isEmpty {
+            result.insert(.model)
+        }
+        if editableCard.bodyType == .empty {
+            result.insert(.bodyType)
+        }
+
+        return result
     }
 }
