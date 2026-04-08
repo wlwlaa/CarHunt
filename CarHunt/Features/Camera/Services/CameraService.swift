@@ -89,7 +89,8 @@ final class CameraService: NSObject, CameraServiceProtocol {
 
                 let settings = AVCapturePhotoSettings()
                 settings.flashMode = .off
-                settings.maxPhotoDimensions = .init()
+                
+                // settings.maxPhotoDimensions = .init()
 
                 let delegate = PhotoCaptureDelegate { result in
                     self.photoCaptureDelegate = nil
@@ -129,7 +130,8 @@ final class CameraService: NSObject, CameraServiceProtocol {
 
         if previewSession.canAddOutput(photoOutput), photoOutput.connection(with: .video) == nil {
             previewSession.addOutput(photoOutput)
-            photoOutput.maxPhotoDimensions = .init()
+            
+            // photoOutput.maxPhotoDimensions = .init()
         }
 
         previewSession.commitConfiguration()
