@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		D59033F72F8683110022EB3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6526FFE32F7C07E1000E1D58 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6526FFEA2F7C07E1000E1D58;
+			remoteInfo = CarHunt;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		6526FFEB2F7C07E1000E1D58 /* CarHunt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CarHunt.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D59033F32F8683110022EB3E /* CarHuntTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CarHuntTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -30,10 +41,22 @@
 			path = CarHunt;
 			sourceTree = "<group>";
 		};
+		D59033F42F8683110022EB3E /* CarHuntTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CarHuntTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		6526FFE82F7C07E1000E1D58 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D59033F02F8683110022EB3E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -47,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				6526FFED2F7C07E1000E1D58 /* CarHunt */,
+				D59033F42F8683110022EB3E /* CarHuntTests */,
 				6526FFEC2F7C07E1000E1D58 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				6526FFEB2F7C07E1000E1D58 /* CarHunt.app */,
+				D59033F32F8683110022EB3E /* CarHuntTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -84,6 +109,29 @@
 			productReference = 6526FFEB2F7C07E1000E1D58 /* CarHunt.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D59033F22F8683110022EB3E /* CarHuntTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D59033FB2F8683110022EB3E /* Build configuration list for PBXNativeTarget "CarHuntTests" */;
+			buildPhases = (
+				D59033EF2F8683110022EB3E /* Sources */,
+				D59033F02F8683110022EB3E /* Frameworks */,
+				D59033F12F8683110022EB3E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D59033F82F8683110022EB3E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D59033F42F8683110022EB3E /* CarHuntTests */,
+			);
+			name = CarHuntTests;
+			packageProductDependencies = (
+			);
+			productName = CarHuntTests;
+			productReference = D59033F32F8683110022EB3E /* CarHuntTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -96,6 +144,10 @@
 				TargetAttributes = {
 					6526FFEA2F7C07E1000E1D58 = {
 						CreatedOnToolsVersion = 26.2;
+					};
+					D59033F22F8683110022EB3E = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 6526FFEA2F7C07E1000E1D58;
 					};
 				};
 			};
@@ -114,12 +166,20 @@
 			projectRoot = "";
 			targets = (
 				6526FFEA2F7C07E1000E1D58 /* CarHunt */,
+				D59033F22F8683110022EB3E /* CarHuntTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		6526FFE92F7C07E1000E1D58 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D59033F12F8683110022EB3E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -136,7 +196,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D59033EF2F8683110022EB3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D59033F82F8683110022EB3E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6526FFEA2F7C07E1000E1D58 /* CarHunt */;
+			targetProxy = D59033F72F8683110022EB3E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		6526FFF62F7C07E3000E1D58 /* Debug */ = {
@@ -342,6 +417,46 @@
 			};
 			name = Release;
 		};
+		D59033F92F8683110022EB3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Rayni.CarHuntTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CarHunt.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CarHunt";
+			};
+			name = Debug;
+		};
+		D59033FA2F8683110022EB3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Rayni.CarHuntTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CarHunt.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CarHunt";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -359,6 +474,15 @@
 			buildConfigurations = (
 				6526FFF92F7C07E3000E1D58 /* Debug */,
 				6526FFFA2F7C07E3000E1D58 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D59033FB2F8683110022EB3E /* Build configuration list for PBXNativeTarget "CarHuntTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D59033F92F8683110022EB3E /* Debug */,
+				D59033FA2F8683110022EB3E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
