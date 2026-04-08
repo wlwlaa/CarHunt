@@ -5,7 +5,6 @@ import ImageIO
 struct CardUIModel: Identifiable {
     var id: Int
     var carImage: Image
-    var photoBase64: String? = nil
     var make: String
     var model: String
     var bodyType: BodyType
@@ -37,7 +36,6 @@ extension CardUIModel {
     static func draft(withPhotoData photoData: Data) -> CardUIModel {
         var card = Self.draft
         card.carImage = Image.fromData(photoData)
-        card.photoBase64 = photoData.base64EncodedString()
 
         let metadata = PhotoMetadataExtractor.extract(from: photoData)
         card.longitude = metadata.longitude
@@ -114,15 +112,9 @@ extension CardUIModel {
 extension CardDataModel {
     // Decode base64 only at UI mapping boundary.
     var asUIModel: CardUIModel {
-        let decodedImageData = Data(
-            base64Encoded: carImage.normalizedBase64,
-            options: [.ignoreUnknownCharacters]
-        )
-
         return CardUIModel(
             id: abs(id.hashValue),
             carImage: Image.fromBase64(carImage),
-            photoBase64: decodedImageData == nil ? nil : carImage.normalizedBase64,
             make: make,
             model: model,
             bodyType: bodyType,
@@ -137,30 +129,28 @@ extension CardDataModel {
     }
 }
 
-extension CardUIModel {
-    var asDataModel: CardDataModel {
-        CardDataModel(
+extension CardDataModel {
+    static func draft(withPhotoData photoData: Data, date: Date = Date()) -> CardDataModel {
+        let metadata = PhotoMetadataExtractor.extract(from: photoData)
+
+        return CardDataModel(
             id: UUID(),
-            carImage: photoBase64 ?? "car.fill",
-            make: make.trimmingCharacters(in: .whitespacesAndNewlines),
-            model: model.trimmingCharacters(in: .whitespacesAndNewlines),
-            bodyTypeRaw: bodyType.rawValue,
-            numGrade: numGrade,
-            year: year,
-            power: power,
-            notes: notes?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty,
+            carImage: photoData.base64EncodedString(),
+            make: "",
+            model: "",
+            bodyTypeRaw: BodyType.empty.rawValue,
+            numGrade: 0,
+            year: nil,
+            power: nil,
+            notes: nil,
             date: date,
-            longitude: longitude,
-            latitude: latitude
+            longitude: metadata.longitude,
+            latitude: metadata.latitude
         )
     }
 }
 
 private extension String {
-    var nilIfEmpty: String? {
-        isEmpty ? nil : self
-    }
-
     var normalizedBase64: String {
         if starts(with: "data:image"),
            let commaIndex = firstIndex(of: ",") {

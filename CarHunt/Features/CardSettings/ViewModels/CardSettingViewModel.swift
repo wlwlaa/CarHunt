@@ -58,6 +58,7 @@ final class CardSettingViewModel: ObservableObject {
 
     private let router: any AppRouting
     private let storage: CardStorage
+    private var draftDataModel: CardDataModel
     private let initialPhotoData: Data?
     private let cardAutofillService: CardAutofillServicing?
     private var didStartAutofill = false
@@ -66,12 +67,27 @@ final class CardSettingViewModel: ObservableObject {
         router: any AppRouting,
         storage: CardStorage,
         initialCard: CardUIModel = .draft,
+        initialDataModel: CardDataModel? = nil,
         initialPhotoData: Data? = nil,
         cardAutofillService: CardAutofillServicing? = nil
     ) {
         self.router = router
         self.storage = storage
         self.editableCard = initialCard
+        self.draftDataModel = initialDataModel ?? CardDataModel(
+            id: UUID(),
+            carImage: "car.fill",
+            make: "",
+            model: "",
+            bodyTypeRaw: BodyType.empty.rawValue,
+            numGrade: 0,
+            year: nil,
+            power: nil,
+            notes: nil,
+            date: initialCard.date,
+            longitude: initialCard.longitude,
+            latitude: initialCard.latitude
+        )
         self.initialPhotoData = initialPhotoData
         self.cardAutofillService = cardAutofillService
     }
@@ -86,9 +102,10 @@ final class CardSettingViewModel: ObservableObject {
 
         editableCard.make = normalizedMake
         editableCard.model = normalizedModel
+        synchronizeDataModelWithEditableCard()
 
         do {
-            try storage.addCard(editableCard.asDataModel)
+            try storage.addCard(draftDataModel)
             openCollection()
         } catch {
             print("Card save error: \(error.localizedDescription)")
@@ -133,6 +150,21 @@ final class CardSettingViewModel: ObservableObject {
         editableCard.bodyType = BodyType(rawValue: response.bodyType) ?? .empty
     }
 
+    private func synchronizeDataModelWithEditableCard() {
+        draftDataModel.make = editableCard.make.trimmingCharacters(in: .whitespacesAndNewlines)
+        draftDataModel.model = editableCard.model.trimmingCharacters(in: .whitespacesAndNewlines)
+        draftDataModel.bodyType = editableCard.bodyType
+        draftDataModel.numGrade = editableCard.numGrade
+        draftDataModel.year = editableCard.year
+        draftDataModel.power = editableCard.power
+        draftDataModel.notes = editableCard.notes?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .nilIfEmpty
+        draftDataModel.date = editableCard.date
+        draftDataModel.longitude = editableCard.longitude
+        draftDataModel.latitude = editableCard.latitude
+    }
+
     private var normalizedMake: String {
         editableCard.make.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -155,5 +187,11 @@ final class CardSettingViewModel: ObservableObject {
         }
 
         return result
+    }
+}
+
+private extension String {
+    var nilIfEmpty: String? {
+        isEmpty ? nil : self
     }
 }

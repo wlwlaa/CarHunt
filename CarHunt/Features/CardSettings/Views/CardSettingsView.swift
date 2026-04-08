@@ -9,6 +9,7 @@ struct CardSettingsView: View {
         router: any AppRouting,
         storage: CardStorage,
         initialCard: CardUIModel = .draft,
+        initialDataModel: CardDataModel? = nil,
         initialPhotoData: Data? = nil,
         cardAutofillService: CardAutofillServicing? = nil
     ) {
@@ -17,6 +18,7 @@ struct CardSettingsView: View {
                 router: router,
                 storage: storage,
                 initialCard: initialCard,
+                initialDataModel: initialDataModel,
                 initialPhotoData: initialPhotoData,
                 cardAutofillService: cardAutofillService
             )
