@@ -8,9 +8,8 @@ struct CardUIModel: Identifiable {
     var model: String
     var bodyType: BodyType
     var numGrade: Int
-    var year: String?
+    var year: Int?
     var power: Int?
-    var engineType: String
     var notes: String?
     var date: Date
 }
@@ -26,7 +25,6 @@ extension CardUIModel {
             numGrade: 0,
             year: nil,
             power: nil,
-            engineType: "",
             notes: nil,
             date: Date()
         )
@@ -110,7 +108,6 @@ extension CardDataModel {
             numGrade: numGrade,
             year: year,
             power: power,
-            engineType: engineType,
             notes: notes,
             date: date
         )

@@ -8,9 +8,8 @@ struct CardDTO: Codable {
     let model: String
     let bodyType: BodyType
     let numGrade: Int
-    let engineType: String
     let date: Date
-    let year: String?
+    let year: Int?
     let power: Int?
     let notes: String?
     let longitude: Double?
@@ -37,7 +36,6 @@ extension CardDTO {
             numGrade: numGrade,
             year: year,
             power: power,
-            engineType: engineType,
             notes: notes,
             date: date,
             longitude: longitude,
@@ -88,9 +86,8 @@ extension CardDTO {
             model: "M4 Competition",
             bodyType: .coupe,
             numGrade: 742,
-            engineType: "Petrol",
             date: Date(timeIntervalSince1970: 1_726_444_800),
-            year: "2022",
+            year: 2022,
             power: 503,
             notes: "Stock look, clean condition.",
             longitude: 37.6173,
@@ -103,9 +100,8 @@ extension CardDTO {
             model: "Giulia Quadrifoglio",
             bodyType: .saloon,
             numGrade: 688,
-            engineType: "Petrol",
             date: Date(timeIntervalSince1970: 1_726_358_400),
-            year: "2021",
+            year: 2021,
             power: 505,
             notes: "Very aggressive sound.",
             longitude: 30.3141,
@@ -118,9 +114,8 @@ extension CardDTO {
             model: "Mustang GT",
             bodyType: .coupe,
             numGrade: 601,
-            engineType: "Petrol",
             date: Date(timeIntervalSince1970: 1_726_272_000),
-            year: "2019",
+            year: 2019,
             power: 460,
             notes: "Classic spec with V8.",
             longitude: 49.1064,
@@ -133,9 +128,8 @@ extension CardDTO {
             model: "Emira",
             bodyType: .coupe,
             numGrade: 715,
-            engineType: "Petrol",
             date: Date(timeIntervalSince1970: 1_726_185_600),
-            year: "2023",
+            year: 2023,
             power: 400,
             notes: "Rare spot near city center.",
             longitude: 39.7015,
@@ -148,9 +142,8 @@ extension CardDTO {
             model: "911 Carrera S",
             bodyType: .coupe,
             numGrade: 799,
-            engineType: "Petrol",
             date: Date(timeIntervalSince1970: 1_726_099_200),
-            year: "2024",
+            year: 2024,
             power: 443,
             notes: "Perfect paint, no mods.",
             longitude: 82.9346,
@@ -163,9 +156,8 @@ extension CardDTO {
             model: "1500 TRX",
             bodyType: .allTerrainVehicle,
             numGrade: 645,
-            engineType: "Petrol",
             date: Date(timeIntervalSince1970: 1_726_012_800),
-            year: "2022",
+            year: 2022,
             power: 702,
             notes: "Huge build, loud exhaust.",
             longitude: 60.5975,

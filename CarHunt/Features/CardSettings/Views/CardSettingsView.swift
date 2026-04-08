@@ -30,8 +30,6 @@ struct CardSettingsView: View {
                         }
                         .pickerStyle(.menu)
 
-                        TextField("Engine Type", text: card.engineType)
-
                         TextField("Year", text: yearBinding)
                             .keyboardType(.numberPad)
 
@@ -113,8 +111,11 @@ struct CardSettingsView: View {
 
     private var yearBinding: Binding<String> {
         Binding(
-            get: { viewModel.editableCard.year ?? "" },
-            set: { viewModel.editableCard.year = $0.isEmpty ? nil : $0 }
+            get: { viewModel.editableCard.year.map(String.init) ?? "" },
+            set: { newValue in
+                let normalized = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                viewModel.editableCard.year = Int(normalized)
+            }
         )
     }
 

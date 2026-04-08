@@ -9,9 +9,8 @@ class CardDataModel {
     var model: String
     private var bodyTypeRaw: String
     var numGrade: Int
-    var year: String?
+    var year: Int?
     var power: Int?
-    var engineType: String
     var notes: String?
     var date: Date
     var longitude: Double?
@@ -28,9 +27,8 @@ class CardDataModel {
          model: String,
          bodyTypeRaw: String,
          numGrade: Int,
-         year: String? = nil,
+         year: Int? = nil,
          power: Int? = nil,
-         engineType: String,
          notes: String? = nil,
          date: Date,
          longitude: Double? = nil,
@@ -43,7 +41,6 @@ class CardDataModel {
         self.numGrade = numGrade
         self.year = year
         self.power = power
-        self.engineType = engineType
         self.notes = notes
         self.date = date
         self.longitude = longitude
