@@ -1,9 +1,11 @@
 import Foundation
 import SwiftUI
+import ImageIO
 
 struct CardUIModel: Identifiable {
     var id: Int
     var carImage: Image
+    var photoBase64: String? = nil
     var make: String
     var model: String
     var bodyType: BodyType
@@ -12,6 +14,8 @@ struct CardUIModel: Identifiable {
     var power: Int?
     var notes: String?
     var date: Date
+    var longitude: Double? = nil
+    var latitude: Double? = nil
 }
 
 extension CardUIModel {
@@ -33,6 +37,11 @@ extension CardUIModel {
     static func draft(withPhotoData photoData: Data) -> CardUIModel {
         var card = Self.draft
         card.carImage = Image.fromData(photoData)
+        card.photoBase64 = photoData.base64EncodedString()
+
+        let metadata = PhotoMetadataExtractor.extract(from: photoData)
+        card.longitude = metadata.longitude
+        card.latitude = metadata.latitude
         return card
     }
 
@@ -105,9 +114,15 @@ extension CardUIModel {
 extension CardDataModel {
     // Decode base64 only at UI mapping boundary.
     var asUIModel: CardUIModel {
-        CardUIModel(
+        let decodedImageData = Data(
+            base64Encoded: carImage.normalizedBase64,
+            options: [.ignoreUnknownCharacters]
+        )
+
+        return CardUIModel(
             id: abs(id.hashValue),
             carImage: Image.fromBase64(carImage),
+            photoBase64: decodedImageData == nil ? nil : carImage.normalizedBase64,
             make: make,
             model: model,
             bodyType: bodyType,
@@ -115,7 +130,9 @@ extension CardDataModel {
             year: year,
             power: power,
             notes: notes,
-            date: date
+            date: date,
+            longitude: longitude,
+            latitude: latitude
         )
     }
 }
@@ -124,7 +141,7 @@ extension CardUIModel {
     var asDataModel: CardDataModel {
         CardDataModel(
             id: UUID(),
-            carImage: "car.fill",
+            carImage: photoBase64 ?? "car.fill",
             make: make.trimmingCharacters(in: .whitespacesAndNewlines),
             model: model.trimmingCharacters(in: .whitespacesAndNewlines),
             bodyTypeRaw: bodyType.rawValue,
@@ -133,8 +150,8 @@ extension CardUIModel {
             power: power,
             notes: notes?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty,
             date: date,
-            longitude: nil,
-            latitude: nil
+            longitude: longitude,
+            latitude: latitude
         )
     }
 }
@@ -142,5 +159,62 @@ extension CardUIModel {
 private extension String {
     var nilIfEmpty: String? {
         isEmpty ? nil : self
+    }
+
+    var normalizedBase64: String {
+        if starts(with: "data:image"),
+           let commaIndex = firstIndex(of: ",") {
+            return String(self[index(after: commaIndex)...])
+        }
+
+        return self
+    }
+}
+
+private enum PhotoMetadataExtractor {
+    struct Metadata {
+        let longitude: Double?
+        let latitude: Double?
+    }
+
+    static func extract(from photoData: Data) -> Metadata {
+        guard
+            let source = CGImageSourceCreateWithData(photoData as CFData, nil),
+            let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+            let gps = properties[kCGImagePropertyGPSDictionary] as? [CFString: Any]
+        else {
+            return Metadata(longitude: nil, latitude: nil)
+        }
+
+        guard
+            var latitude = valueAsDouble(gps[kCGImagePropertyGPSLatitude]),
+            var longitude = valueAsDouble(gps[kCGImagePropertyGPSLongitude])
+        else {
+            return Metadata(longitude: nil, latitude: nil)
+        }
+
+        if let latitudeRef = gps[kCGImagePropertyGPSLatitudeRef] as? String,
+           latitudeRef.uppercased() == "S" {
+            latitude = -abs(latitude)
+        }
+
+        if let longitudeRef = gps[kCGImagePropertyGPSLongitudeRef] as? String,
+           longitudeRef.uppercased() == "W" {
+            longitude = -abs(longitude)
+        }
+
+        return Metadata(longitude: longitude, latitude: latitude)
+    }
+
+    private static func valueAsDouble(_ value: Any?) -> Double? {
+        if let number = value as? NSNumber {
+            return number.doubleValue
+        }
+
+        if let string = value as? String {
+            return Double(string)
+        }
+
+        return nil
     }
 }
