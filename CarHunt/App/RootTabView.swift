@@ -3,7 +3,14 @@ import SwiftData
 
 struct RootTabView: View {
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var router = AppRouter()
+    @StateObject private var router: AppRouter
+    private let cardAutofillService: CardAutofillServicing
+
+    init() {
+        _router = StateObject(wrappedValue: AppRouter())
+        let networkService = URLSessionNetworkService(baseURL: Self.cardsFromImageBaseURL)
+        self.cardAutofillService = CardAutofillService(networkService: networkService)
+    }
 
     var body: some View {
         TabView(selection: $router.selectedTab) {
@@ -36,11 +43,27 @@ struct RootTabView: View {
                 NavigationStack {
                     CardSettingsView(
                         router: router,
-                        initialCard: router.presentedCardSettingsCard ?? .draft
+                        initialCard: router.presentedCardSettingsCard ?? .draft,
+                        initialPhotoData: router.presentedCardSettingsPhotoData,
+                        cardAutofillService: cardAutofillService
                     )
                 }
             }
         }
+    }
+
+    private static var cardsFromImageBaseURL: URL {
+        if let envValue = ProcessInfo.processInfo.environment["CARHUNT_API_BASE_URL"],
+           let url = URL(string: envValue) {
+            return url
+        }
+
+        if let plistValue = Bundle.main.object(forInfoDictionaryKey: "CARHUNT_API_BASE_URL") as? String,
+           let url = URL(string: plistValue) {
+            return url
+        }
+
+        return URL(string: "https://localhost:8443")!
     }
 }
 

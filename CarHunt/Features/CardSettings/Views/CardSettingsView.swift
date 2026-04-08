@@ -3,9 +3,19 @@ import SwiftUI
 struct CardSettingsView: View {
     @StateObject private var viewModel: CardSettingViewModel
 
-    init(router: any AppRouting, initialCard: CardUIModel = .draft) {
+    init(
+        router: any AppRouting,
+        initialCard: CardUIModel = .draft,
+        initialPhotoData: Data? = nil,
+        cardAutofillService: CardAutofillServicing? = nil
+    ) {
         _viewModel = StateObject(
-            wrappedValue: CardSettingViewModel(router: router, initialCard: initialCard)
+            wrappedValue: CardSettingViewModel(
+                router: router,
+                initialCard: initialCard,
+                initialPhotoData: initialPhotoData,
+                cardAutofillService: cardAutofillService
+            )
         )
     }
 
@@ -18,6 +28,16 @@ struct CardSettingsView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 320)
                     .clipped()
+
+                if viewModel.isAutofillInProgress {
+                    HStack(spacing: 10) {
+                        ProgressView()
+                        Text("Recognizing car details...")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.top, 16)
+                }
 
                 VStack(spacing: 20) {
                     settingsBlock(title: "Characteristics") {
@@ -58,10 +78,14 @@ struct CardSettingsView: View {
                         }
                     }
                 }
+                .disabled(viewModel.isAutofillInProgress)
                 .padding(20)
             }
         }
         .background(Color(.systemGroupedBackground))
+        .task {
+            await viewModel.autofillIfNeeded()
+        }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
