@@ -1,4 +1,4 @@
-enum BodyType: String, Codable, CaseIterable {
+enum BodyType: String, Codable {
     case saloon = "Saloon"
     case wagon = "Wagon"
     case convertible = "Convertible"
@@ -11,8 +11,4 @@ enum BodyType: String, Codable, CaseIterable {
     case roadster = "Roadster"
     case van = "Van"
     case empty = ""
-
-    var displayName: String {
-        rawValue.isEmpty ? "Not selected" : rawValue
-    }
 }
