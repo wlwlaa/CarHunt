@@ -119,3 +119,28 @@ extension CardDataModel {
         )
     }
 }
+
+extension CardUIModel {
+    var asDataModel: CardDataModel {
+        CardDataModel(
+            id: UUID(),
+            carImage: "car.fill",
+            make: make.trimmingCharacters(in: .whitespacesAndNewlines),
+            model: model.trimmingCharacters(in: .whitespacesAndNewlines),
+            bodyTypeRaw: bodyType.rawValue,
+            numGrade: numGrade,
+            year: year,
+            power: power,
+            notes: notes?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty,
+            date: date,
+            longitude: nil,
+            latitude: nil
+        )
+    }
+}
+
+private extension String {
+    var nilIfEmpty: String? {
+        isEmpty ? nil : self
+    }
+}
