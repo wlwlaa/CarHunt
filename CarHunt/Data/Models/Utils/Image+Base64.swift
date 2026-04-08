@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import UIKit
 
 extension Image {
     static func fromData(
