@@ -11,7 +11,6 @@ struct CardUIModel: Identifiable {
     var year: String?
     var power: Int?
     var engineType: String
-    var downVotes: Int
     var notes: String?
     var date: Date
 }
@@ -20,7 +19,7 @@ extension CardUIModel {
     static var draft: CardUIModel {
         CardUIModel(
             id: 0,
-            carImage: Image(systemName: "photo"),
+            carImage: Image(systemName: "car"),
             make: "",
             model: "",
             bodyType: .empty,
@@ -28,7 +27,6 @@ extension CardUIModel {
             year: nil,
             power: nil,
             engineType: "",
-            downVotes: 0,
             notes: nil,
             date: Date()
         )
@@ -113,7 +111,6 @@ extension CardDataModel {
             year: year,
             power: power,
             engineType: engineType,
-            downVotes: downVotes,
             notes: notes,
             date: date
         )

@@ -12,7 +12,6 @@ class CardDataModel {
     var year: String?
     var power: Int?
     var engineType: String
-    var downVotes: Int
     var notes: String?
     var date: Date
     var longitude: Double?
@@ -32,7 +31,6 @@ class CardDataModel {
          year: String? = nil,
          power: Int? = nil,
          engineType: String,
-         downVotes: Int,
          notes: String? = nil,
          date: Date,
          longitude: Double? = nil,
@@ -46,7 +44,6 @@ class CardDataModel {
         self.year = year
         self.power = power
         self.engineType = engineType
-        self.downVotes = downVotes
         self.notes = notes
         self.date = date
         self.longitude = longitude

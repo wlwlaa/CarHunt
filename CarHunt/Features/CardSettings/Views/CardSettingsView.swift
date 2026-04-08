@@ -8,62 +8,64 @@ struct CardSettingsView: View {
     }
 
     var body: some View {
-        Form {
-            Section("Preview") {
+        ScrollView {
+            VStack(spacing: 0) {
                 viewModel.editableCard.carImage
-                //CardView(card: viewModel.editableCard)
-            }
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 320)
+                    .clipped()
 
-            Section("Characteristics") {
-                TextField("Make", text: card.make)
-                TextField("Model", text: card.model)
+                VStack(spacing: 20) {
+                    settingsBlock(title: "Characteristics") {
+                        TextField("Make", text: card.make)
+                        TextField("Model", text: card.model)
 
-                Picker("Body Type", selection: card.bodyType) {
-                    ForEach(BodyType.allCases, id: \.self) { type in
-                        Text(type.rawValue.isEmpty ? "Unknown" : type.rawValue)
-                            .tag(type)
+                        Picker("Body Type", selection: card.bodyType) {
+                            ForEach(BodyType.allCases, id: \.self) { type in
+                                Text(type.rawValue.isEmpty ? "Unknown" : type.rawValue)
+                                    .tag(type)
+                            }
+                        }
+                        .pickerStyle(.menu)
+
+                        TextField("Engine Type", text: card.engineType)
+
+                        TextField("Year", text: yearBinding)
+                            .keyboardType(.numberPad)
+
+                        TextField("Power (hp)", text: powerBinding)
+                            .keyboardType(.numberPad)
+                    }
+
+                    settingsBlock(title: "Rating") {
+                        LabeledContent("Grade") {
+                            Text("\(viewModel.editableCard.numGrade)")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    settingsBlock(title: "Notes") {
+                        TextField("Notes", text: notesBinding, axis: .vertical)
+                            .lineLimit(3...8)
+                    }
+
+                    settingsBlock(title: "Meta") {
+                        LabeledContent("Date") {
+                            Text(viewModel.editableCard.date.formatted(date: .abbreviated, time: .shortened))
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
-
-                TextField("Engine Type", text: card.engineType)
-
-                TextField("Year", text: yearBinding)
-                    .keyboardType(.numberPad)
-
-                TextField("Power (hp)", text: powerBinding)
-                    .keyboardType(.numberPad)
-            }
-
-            Section("Rating") {
-                Stepper("Grade: \(viewModel.editableCard.numGrade)", value: card.numGrade, in: 0...1000)
-                Stepper("DownVotes: \(viewModel.editableCard.downVotes)", value: card.downVotes, in: 0...1000)
-            }
-
-            Section("Notes") {
-                TextField("Notes", text: notesBinding, axis: .vertical)
-                    .lineLimit(3...8)
-            }
-
-            Section("Meta") {
-                DatePicker(
-                    "Date",
-                    selection: card.date,
-                    displayedComponents: [.date, .hourAndMinute]
-                )
-
-                Text("Card id: \(viewModel.editableCard.id)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                Text("Image is preview-only in this draft screen")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                .padding(20)
             }
         }
-        .navigationTitle("Card Settings")
+        .background(Color(.systemGroupedBackground))
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Collection") {
+                Button("Add") {
                     viewModel.openCollection()
                 }
             }
@@ -74,6 +76,25 @@ struct CardSettingsView: View {
                 .tint(.red)
             }
         }
+    }
+
+    @ViewBuilder
+    private func settingsBlock<Content: View>(
+        title: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(title)
+                .font(.headline)
+
+            content()
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color(.secondarySystemBackground))
+        )
     }
 
     private var card: Binding<CardUIModel> {

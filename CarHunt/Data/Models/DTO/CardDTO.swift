@@ -9,7 +9,6 @@ struct CardDTO: Codable {
     let bodyType: BodyType
     let numGrade: Int
     let engineType: String
-    let downVotes: Int
     let date: Date
     let year: String?
     let power: Int?
@@ -39,7 +38,6 @@ extension CardDTO {
             year: year,
             power: power,
             engineType: engineType,
-            downVotes: downVotes,
             notes: notes,
             date: date,
             longitude: longitude,
@@ -91,7 +89,6 @@ extension CardDTO {
             bodyType: .coupe,
             numGrade: 742,
             engineType: "Petrol",
-            downVotes: 2,
             date: Date(timeIntervalSince1970: 1_726_444_800),
             year: "2022",
             power: 503,
@@ -107,7 +104,6 @@ extension CardDTO {
             bodyType: .saloon,
             numGrade: 688,
             engineType: "Petrol",
-            downVotes: 1,
             date: Date(timeIntervalSince1970: 1_726_358_400),
             year: "2021",
             power: 505,
@@ -123,7 +119,6 @@ extension CardDTO {
             bodyType: .coupe,
             numGrade: 601,
             engineType: "Petrol",
-            downVotes: 4,
             date: Date(timeIntervalSince1970: 1_726_272_000),
             year: "2019",
             power: 460,
@@ -139,7 +134,6 @@ extension CardDTO {
             bodyType: .coupe,
             numGrade: 715,
             engineType: "Petrol",
-            downVotes: 0,
             date: Date(timeIntervalSince1970: 1_726_185_600),
             year: "2023",
             power: 400,
@@ -155,7 +149,6 @@ extension CardDTO {
             bodyType: .coupe,
             numGrade: 799,
             engineType: "Petrol",
-            downVotes: 1,
             date: Date(timeIntervalSince1970: 1_726_099_200),
             year: "2024",
             power: 443,
@@ -171,7 +164,6 @@ extension CardDTO {
             bodyType: .allTerrainVehicle,
             numGrade: 645,
             engineType: "Petrol",
-            downVotes: 3,
             date: Date(timeIntervalSince1970: 1_726_012_800),
             year: "2022",
             power: 702,
