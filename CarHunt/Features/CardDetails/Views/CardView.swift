@@ -37,6 +37,7 @@ struct CardView: View {
                         Text(card.letterGrade)
                             .font(style == .compact ? .headline : .largeTitle.weight(.bold))
                             .fontWeight(.bold)
+                            .foregroundStyle(card.gradeAccentColor ?? .primary)
 
                         Text("\(card.numGrade)")
                             .font(style == .compact ? .caption : .title3)
@@ -78,12 +79,18 @@ struct CardView: View {
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color(.systemBackground))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color(.systemGray5), lineWidth: 1)
+                )
+                .shadow(
+                    color: (card.gradeAccentColor ?? .clear).opacity(card.gradeShadowOpacity),
+                    radius: 8,
+                    x: 0,
+                    y: 0
+                )
+                .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
         )
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color(.systemGray5), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
         .frame(maxWidth: .infinity)
     }
 }
@@ -136,7 +143,7 @@ struct CardView: View {
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
-            numGrade: 742,
+            numGrade: 642,
             year: "2022",
             power: 503,
             engineType: "Petrol",
@@ -150,7 +157,7 @@ struct CardView: View {
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
-            numGrade: 742,
+            numGrade: 842,
             year: "2022",
             power: 503,
             engineType: "Petrol",
@@ -164,7 +171,7 @@ struct CardView: View {
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
-            numGrade: 742,
+            numGrade: 942,
             year: "2022",
             power: 503,
             engineType: "Petrol",
@@ -178,7 +185,7 @@ struct CardView: View {
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
-            numGrade: 742,
+            numGrade: 342,
             year: "2022",
             power: 503,
             engineType: "Petrol",

@@ -37,7 +37,6 @@ private extension CollectionView {
                 cardsScrollView
             }
         }
-        .padding(.horizontal)
         .padding(.top, 4)
         .toolbar(.hidden, for: .navigationBar)
         .toolbarBackground(.hidden, for: .navigationBar)
@@ -66,6 +65,7 @@ private extension CollectionView {
                 header
                 emptyState
             }
+            .padding(.horizontal)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .refreshable {
@@ -80,6 +80,7 @@ private extension CollectionView {
                 cardGrid
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
         }
         .refreshable {
             await viewModel.refresh()
@@ -216,4 +217,10 @@ private struct CardDetailsModalView: View {
             .padding(.trailing, 18)
         }
     }
+}
+
+
+#Preview("Card grid") {
+    @Previewable @Environment(\.modelContext) var modelContext
+    CollectionView(context: modelContext)
 }
