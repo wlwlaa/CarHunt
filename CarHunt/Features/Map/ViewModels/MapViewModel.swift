@@ -66,7 +66,6 @@ extension MapViewModel {
             model: card.model,
             bodyType: card.bodyType,
             numGrade: card.numGrade,
-            engineType: card.engineType,
             downVotes: card.downVotes,
             date: card.date,
             year: card.year,

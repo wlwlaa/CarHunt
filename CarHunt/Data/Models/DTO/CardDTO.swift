@@ -26,7 +26,6 @@ extension CardDTO {
             model: dataModel.model,
             bodyType: dataModel.bodyType,
             numGrade: dataModel.numGrade,
-            engineType: dataModel.engineType,
             downVotes: dataModel.downVotes,
             date: dataModel.date,
             year: dataModel.year,
