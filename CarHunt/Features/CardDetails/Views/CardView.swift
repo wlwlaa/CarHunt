@@ -62,11 +62,6 @@ struct CardView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                Text(card.engineType)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-
                 if let notes = card.notes, !notes.isEmpty {
                     Text(notes)
                         .font(style == .compact ? .caption : .title3)
@@ -104,10 +99,8 @@ struct CardView: View {
         model: "M4 Competition",
         bodyType: .coupe,
         numGrade: 742,
-        engineType: "Petrol",
-        downVotes: 2,
         date: Date(timeIntervalSince1970: 1_726_444_800),
-        year: "2022",
+        year: 2022,
         power: 503,
         notes: "Stock look, clean condition.",
         longitude: 37.6173,
@@ -130,10 +123,8 @@ struct CardView: View {
             model: "M4 Competition",
             bodyType: .coupe,
             numGrade: 742,
-            year: "2022",
+            year: 2022,
             power: 503,
-            engineType: "Petrol",
-            downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
         ),
@@ -144,10 +135,8 @@ struct CardView: View {
             model: "M4 Competition",
             bodyType: .coupe,
             numGrade: 642,
-            year: "2022",
+            year: 2022,
             power: 503,
-            engineType: "Petrol",
-            downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
         ),
@@ -158,10 +147,8 @@ struct CardView: View {
             model: "M4 Competition",
             bodyType: .coupe,
             numGrade: 842,
-            year: "2022",
+            year: 2022,
             power: 503,
-            engineType: "Petrol",
-            downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
         ),
@@ -172,10 +159,8 @@ struct CardView: View {
             model: "M4 Competition",
             bodyType: .coupe,
             numGrade: 942,
-            year: "2022",
+            year: 2022,
             power: 503,
-            engineType: "Petrol",
-            downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
         ),
@@ -186,10 +171,8 @@ struct CardView: View {
             model: "M4 Competition",
             bodyType: .coupe,
             numGrade: 342,
-            year: "2022",
+            year: 2022,
             power: 503,
-            engineType: "Petrol",
-            downVotes: 3,
             notes: "Clean spec, spotted downtown.",
             date: Date()
         ),

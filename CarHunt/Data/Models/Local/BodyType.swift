@@ -12,3 +12,22 @@ enum BodyType: String, Codable {
     case van = "Van"
     case empty = ""
 }
+
+extension BodyType: CaseIterable {
+    static var allCases: [BodyType] {
+        [
+            .saloon,
+            .wagon,
+            .convertible,
+            .minivan,
+            .suv,
+            .allTerrainVehicle,
+            .hatchback3Door,
+            .hatchback5Door,
+            .coupe,
+            .roadster,
+            .van,
+            .empty
+        ]
+    }
+}
