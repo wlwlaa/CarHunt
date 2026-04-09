@@ -271,6 +271,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CarHunt/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "CarHunt needs camera access to capture cars for your collection.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "CarHunt uses your location to save GPS tags for captured car photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,6 +313,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CarHunt/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "CarHunt needs camera access to capture cars for your collection.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "CarHunt uses your location to save GPS tags for captured car photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

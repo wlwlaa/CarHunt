@@ -96,11 +96,11 @@ private extension CollectionView {
     }
 
     func cardButton(for card: CardDataModel) -> some View {
-        let uiModel = card.asUIModel
+        let compactUIModel = card.asUIModel(maxPixelSize: CardUIModel.ImagePixelSize.compact)
         return Button {
-            selectedCard = uiModel
+            selectedCard = card.asUIModel(maxPixelSize: CardUIModel.ImagePixelSize.expanded)
         } label: {
-            CardView(card: uiModel)
+            CardView(card: compactUIModel)
         }
         .buttonStyle(.plain)
         .contextMenu {
