@@ -124,16 +124,16 @@ final class CardSettingViewModel: ObservableObject {
         guard !didStartAutofill else { return }
         didStartAutofill = true
 
-        guard
-            let initialPhotoData,
-            let cardAutofillService
-        else { return }
+        guard let cardAutofillService else { return }
+        guard let photoDataForAutofill = initialPhotoData ?? draftDataModel.carImage.decodedImageData else {
+            return
+        }
 
         isAutofillInProgress = true
         defer { isAutofillInProgress = false }
 
         do {
-            let response = try await cardAutofillService.autofill(from: initialPhotoData)
+            let response = try await cardAutofillService.autofill(from: photoDataForAutofill)
             applyAutofill(response)
         } catch {
             print("Card autofill error: \(error.localizedDescription)")
@@ -193,5 +193,17 @@ final class CardSettingViewModel: ObservableObject {
 private extension String {
     var nilIfEmpty: String? {
         isEmpty ? nil : self
+    }
+
+    var decodedImageData: Data? {
+        let normalized: String
+        if starts(with: "data:image"),
+           let commaIndex = firstIndex(of: ",") {
+            normalized = String(self[index(after: commaIndex)...])
+        } else {
+            normalized = self
+        }
+
+        return Data(base64Encoded: normalized, options: [.ignoreUnknownCharacters])
     }
 }

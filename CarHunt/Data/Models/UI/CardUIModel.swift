@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import ImageIO
+import UniformTypeIdentifiers
 
 struct CardUIModel: Identifiable {
     var id: Int
@@ -132,10 +133,11 @@ extension CardDataModel {
 extension CardDataModel {
     static func draft(withPhotoData photoData: Data, date: Date = Date()) -> CardDataModel {
         let metadata = PhotoMetadataExtractor.extract(from: photoData)
+        let optimizedPhotoData = StoredPhotoOptimizer.optimize(photoData)
 
         return CardDataModel(
             id: UUID(),
-            carImage: photoData.base64EncodedString(),
+            carImage: optimizedPhotoData.base64EncodedString(),
             make: "",
             model: "",
             bodyTypeRaw: BodyType.empty.rawValue,
@@ -206,5 +208,76 @@ private enum PhotoMetadataExtractor {
         }
 
         return nil
+    }
+}
+
+private enum StoredPhotoOptimizer {
+    private static let maxPixelSize: CGFloat = 1_600
+    private static let jpegQuality: CGFloat = 0.72
+
+    static func optimize(_ originalData: Data) -> Data {
+        guard let source = CGImageSourceCreateWithData(originalData as CFData, nil) else {
+            return originalData
+        }
+
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceShouldCache: false,
+            kCGImageSourceShouldCacheImmediately: false,
+            kCGImageSourceThumbnailMaxPixelSize: Int(maxPixelSize)
+        ]
+
+        guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else {
+            return originalData
+        }
+
+        if let jpegData = encodedData(
+            from: cgImage,
+            type: UTType.jpeg,
+            compressionQuality: jpegQuality
+        ),
+           jpegData.count < originalData.count {
+            return jpegData
+        }
+
+        if let pngData = encodedData(
+            from: cgImage,
+            type: UTType.png,
+            compressionQuality: nil
+        ),
+           pngData.count < originalData.count {
+            return pngData
+        }
+
+        return originalData
+    }
+
+    private static func encodedData(
+        from cgImage: CGImage,
+        type: UTType,
+        compressionQuality: CGFloat?
+    ) -> Data? {
+        let result = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(
+            result,
+            type.identifier as CFString,
+            1,
+            nil
+        ) else {
+            return nil
+        }
+
+        var properties: [CFString: Any] = [:]
+        if let compressionQuality {
+            properties[kCGImageDestinationLossyCompressionQuality] = compressionQuality
+        }
+
+        CGImageDestinationAddImage(destination, cgImage, properties as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else {
+            return nil
+        }
+
+        return result as Data
     }
 }
