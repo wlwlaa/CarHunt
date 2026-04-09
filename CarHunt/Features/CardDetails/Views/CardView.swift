@@ -59,15 +59,19 @@ struct CardView: View {
                     .lineLimit(1)
 
                 if let year = card.year {
-                    Text("Year: \(year)")
+                    Text("Year: \(String(year))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                } else {
+                    Text("")
                 }
 
                 if let power = card.power {
                     Text("Power: \(power) hp")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                } else {
+                    Text("")
                 }
 
                 if let notes = card.notes, !notes.isEmpty {
@@ -75,7 +79,10 @@ struct CardView: View {
                         .font(style == .compact ? .caption : .title3)
                         .lineLimit(style == .compact ? 1 : nil)
                         .foregroundStyle(.primary)
+                } else {
+                    Text("")
                 }
+                
                 if style == .expanded {
                     Text("Added: \(card.date, formatter: Self.captureDateFormatter)")
                         .font(.caption)
@@ -185,8 +192,9 @@ struct CardView: View {
             longitude: 37.6173,
             latitude: 55.7558
         ).toDataModel().asUIModel,
+        CardUIModel(id: 5, carImage: Image(systemName: "car"), make: "Nigga", model: "Nigga", bodyType: .convertible, numGrade: 5, date: Date()),
         CardDTO(
-            id: "5",
+            id: "6",
             imageBase64: MockCardImageBase64.bmw ?? "",
             make: "BMW",
             model: "M4 Competition",
@@ -200,7 +208,7 @@ struct CardView: View {
             latitude: 55.7558
         ).toDataModel().asUIModel,
         CardDTO(
-            id: "6",
+            id: "7",
             imageBase64: MockCardImageBase64.bmw ?? "",
             make: "BMW",
             model: "M4 Competition",

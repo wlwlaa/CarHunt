@@ -61,7 +61,7 @@ final class CardSettingViewModel: ObservableObject {
     private var draftDataModel: CardDataModel
     private let initialPhotoData: Data?
     private let cardAutofillService: CardAutofillServicing?
-    private var didStartAutofill = false
+    private var autofillTask: Task<CardFromImageResponse, Error>?
 
     init(
         router: any AppRouting,
@@ -90,6 +90,8 @@ final class CardSettingViewModel: ObservableObject {
         )
         self.initialPhotoData = initialPhotoData
         self.cardAutofillService = cardAutofillService
+
+        prepareAutofillIfNeeded()
     }
 
     func addCard() {
@@ -120,20 +122,28 @@ final class CardSettingViewModel: ObservableObject {
         router.open(.camera)
     }
 
-    func autofillIfNeeded() async {
-        guard !didStartAutofill else { return }
-        didStartAutofill = true
-
+    func prepareAutofillIfNeeded() {
+        guard autofillTask == nil else { return }
         guard let cardAutofillService else { return }
-        guard let photoDataForAutofill = initialPhotoData ?? draftDataModel.carImage.decodedImageData else {
+        // Prefer stored draft image data because it is optimized at capture time.
+        guard let photoDataForAutofill = draftDataModel.carImage.decodedImageData ?? initialPhotoData else {
             return
         }
+
+        autofillTask = Task {
+            try await cardAutofillService.autofill(from: photoDataForAutofill)
+        }
+    }
+
+    func applyAutofillIfNeeded() async {
+        prepareAutofillIfNeeded()
+        guard let autofillTask else { return }
 
         isAutofillInProgress = true
         defer { isAutofillInProgress = false }
 
         do {
-            let response = try await cardAutofillService.autofill(from: photoDataForAutofill)
+            let response = try await autofillTask.value
             applyAutofill(response)
         } catch {
             print("Card autofill error: \(error.localizedDescription)")

@@ -108,7 +108,12 @@ final class CameraService: NSObject, CameraServiceProtocol {
                     return
                 }
 
-                let settings = AVCapturePhotoSettings()
+                let settings: AVCapturePhotoSettings
+                if self.photoOutput.availablePhotoCodecTypes.contains(.jpeg) {
+                    settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+                } else {
+                    settings = AVCapturePhotoSettings()
+                }
                 settings.flashMode = .off
                 
                 // settings.maxPhotoDimensions = .init()
