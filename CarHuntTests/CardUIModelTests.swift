@@ -95,12 +95,12 @@ final class CardUIModelTests: XCTestCase {
             model: "M4",
             bodyType: .coupe,
             numGrade: numGrade,
-            year: "2022",
+            year: 2022,
             power: 503,
-            engineType: "Petrol",
-            downVotes: 0,
             notes: nil,
-            date: Date()
+            date: Date(),
+            longitude: nil,
+            latitude: nil
         )
     }
 }
