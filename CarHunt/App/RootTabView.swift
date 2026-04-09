@@ -28,12 +28,22 @@ struct RootTabView: View {
                     Label("Collection", systemImage: "square.grid.2x2")
                 }
                 .tag(AppTab.collection)
+            
+            MapView(context: modelContext)
+                .tabItem {
+                    Label("Map", systemImage: "map")
+                }
+                .tag(AppTab.map)
+            
         }
         .tint(.blue)
         .environmentObject(router)
         .sheet(item: $router.presented) { route in
             switch route {
             case .camera:
+                EmptyView()
+
+            case .map:
                 EmptyView()
 
             case .collection:

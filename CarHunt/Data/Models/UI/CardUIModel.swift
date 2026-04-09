@@ -19,6 +19,11 @@ struct CardUIModel: Identifiable {
 }
 
 extension CardUIModel {
+    enum ImagePixelSize {
+        static let compact: CGFloat = 480
+        static let expanded: CGFloat = 1_280
+    }
+
     static var draft: CardUIModel {
         CardUIModel(
             id: 0,
@@ -36,7 +41,10 @@ extension CardUIModel {
 
     static func draft(withPhotoData photoData: Data) -> CardUIModel {
         var card = Self.draft
-        card.carImage = Image.fromData(photoData)
+        card.carImage = Image.fromData(
+            photoData,
+            maxPixelSize: ImagePixelSize.expanded
+        )
 
         let metadata = PhotoMetadataExtractor.extract(from: photoData)
         card.longitude = metadata.longitude
@@ -113,9 +121,13 @@ extension CardUIModel {
 extension CardDataModel {
     // Decode base64 only at UI mapping boundary.
     var asUIModel: CardUIModel {
+        asUIModel(maxPixelSize: CardUIModel.ImagePixelSize.expanded)
+    }
+
+    func asUIModel(maxPixelSize: CGFloat) -> CardUIModel {
         return CardUIModel(
             id: abs(id.hashValue),
-            carImage: Image.fromBase64(carImage),
+            carImage: Image.fromBase64(carImage, maxPixelSize: maxPixelSize),
             make: make,
             model: model,
             bodyType: bodyType,
