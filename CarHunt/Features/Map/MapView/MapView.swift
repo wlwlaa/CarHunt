@@ -31,14 +31,15 @@ private extension MapView {
             MapViewControllerRepresentable(cards: viewModel.cardsWithLocations)
                 .ignoresSafeArea()
 
-            VStack(alignment: .leading, spacing: 16) {
-                header
+            VStack(alignment: .center, spacing: 16) {
+                Spacer(minLength: 0)
 
                 if viewModel.cards.isEmpty {
                     emptyState(
                         title: "No Cars On Map Yet",
                         message: "Add cards to preview car locations on the map."
                     )
+                    
                 } else if viewModel.cardsWithLocations.isEmpty {
                     emptyState(
                         title: "No Saved Coordinates",
@@ -49,7 +50,7 @@ private extension MapView {
                 Spacer(minLength: 0)
             }
             .tint(.blue)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .ignoresSafeArea()
         }
         .toolbar(.hidden, for: .navigationBar)
@@ -70,17 +71,6 @@ private extension MapView {
                 Text(viewModel.errorMessage ?? "Unknown error")
             }
         )
-    }
-
-    var header: some View {
-        Text("Map")
-            .font(.system(size: 36, weight: .bold))
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .frame(minHeight: 55, alignment: .bottomLeading)
-            .padding(.horizontal, 20)
-            .padding(.top, 52)
-            .padding(.bottom, 16)
-            .modifier(MapHeaderGlassModifier(shape: headerShape))
     }
 
     func emptyState(title: String, message: String) -> some View {
@@ -109,19 +99,3 @@ private extension MapView {
         )
     }
 }
-
-private struct MapHeaderGlassModifier<S: Shape>: ViewModifier {
-    let shape: S
-
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .glassEffect(.clear, in: shape)
-        } else {
-            content
-                .background(.ultraThinMaterial, in: shape)
-        }
-    }
-}
-
