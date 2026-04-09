@@ -32,10 +32,14 @@ private extension CollectionView {
     @ViewBuilder
     var content: some View {
         Group {
-            if viewModel.cards.isEmpty {
-                emptyCollectionScrollView
+            if viewModel.isLoading {
+                loadingView
             } else {
-                cardsScrollView
+                if viewModel.cards.isEmpty {
+                    emptyCollectionScrollView
+                } else {
+                    cardsScrollView
+                }
             }
         }
         .padding(.top, 4)
@@ -87,6 +91,26 @@ private extension CollectionView {
         .refreshable {
             await viewModel.refresh()
         }
+    }
+    
+    var loadingView: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            header
+            
+            Spacer()
+            
+            VStack(alignment: .center, spacing: 8) {
+                Text("Loading cards")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                ProgressView()
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal)
     }
 
     var cardsScrollView: some View {
@@ -264,4 +288,31 @@ private struct CardDetailsModalView: View {
     @Previewable @Environment(\.modelContext) var modelContext
     CollectionView(context: modelContext)
         .environmentObject(AppRouter())
+}
+
+#Preview("Progress indicator") {
+    VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Collection")
+                .font(.system(size: 36, weight: .bold))
+
+            .labelsHidden()
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        Spacer()
+        
+        VStack(alignment: .center, spacing: 8) {
+            Text("Loading cards")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            ProgressView()
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        
+        Spacer()
+        
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .padding(.horizontal)
 }
