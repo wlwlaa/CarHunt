@@ -31,9 +31,24 @@ struct CardSettingsView: View {
                 viewModel.editableCard.carImage
                     .resizable()
                     .scaledToFill()
+                    .frame(width: 250, height: 334)
+                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                            .stroke(Color(.separator).opacity(0.18), lineWidth: 1)
+                    )
                     .frame(maxWidth: .infinity)
-                    .frame(height: 320)
-                    .clipped()
+                    .padding(.top, 18)
+
+                Button("Autofill") {
+                    Task {
+                        await viewModel.applyAutofillIfNeeded()
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+                .padding(.top, 16)
+                .disabled(viewModel.isAutofillInProgress)
 
                 if viewModel.isAutofillInProgress {
                     HStack(spacing: 10) {
@@ -108,9 +123,6 @@ struct CardSettingsView: View {
             }
         }
         .background(Color(.systemGroupedBackground))
-        .task {
-            await viewModel.autofillIfNeeded()
-        }
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: viewModel.validationFlashTrigger) { _ in
             flashTask?.cancel()
