@@ -65,7 +65,7 @@ jobs:
       
             file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
       
-            xcodebuild test-without-building \
+            xcodebuild test \
               -scheme "$scheme" \
               -"$filetype_parameter" "$file_to_build" \
               -destination "platform=$platform,name=$device"
