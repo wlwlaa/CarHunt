@@ -131,6 +131,8 @@ final class AppRouterTests: XCTestCase {
                 return "camera"
             case .collection:
                 return "collection"
+            case .map:
+                return "map"
             }
         }
     }
