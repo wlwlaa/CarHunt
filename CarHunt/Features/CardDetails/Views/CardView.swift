@@ -59,7 +59,7 @@ struct CardView: View {
                     .lineLimit(1)
 
                 if let year = card.year {
-                    Text("Year: \(year)")
+                    Text("Year: \(String(year))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
