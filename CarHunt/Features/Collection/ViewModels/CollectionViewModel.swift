@@ -6,6 +6,7 @@ final class CardListViewModel: ObservableObject {
     
     @Published var cards: [CardDataModel] = []
     @Published var selectedSortType: CardSortType = .dateNewest
+    @Published var isLoading: Bool = true
     @Published var isLoadingMockCards = false
     @Published var errorMessage: String?
     
@@ -25,6 +26,9 @@ extension CardListViewModel {
     }
 
     func loadCards(sortType: CardSortType? = nil) {
+        isLoading = true
+        defer { isLoading = false }
+        
         if let sortType {
             selectedSortType = sortType
         }
