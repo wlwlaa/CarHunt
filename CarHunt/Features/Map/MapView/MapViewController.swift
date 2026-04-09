@@ -123,8 +123,8 @@ private final class MapCarAnnotation: NSObject, MKAnnotation {
         title = "\(card.make) \(card.model)"
 
         var subtitleParts: [String] = []
-        if let year = card.year, !year.isEmpty {
-            subtitleParts.append(year)
+        if let year = card.year {
+            subtitleParts.append(String(year))
         }
         subtitleParts.append("Grade \(card.numGrade)")
         subtitle = subtitleParts.joined(separator: " • ")
