@@ -106,14 +106,14 @@ final class CardSettingViewModel: ObservableObject {
 
         do {
             try storage.addCard(draftDataModel)
-            openCollection()
+            openCollection(showingCardID: draftDataModel.id)
         } catch {
             print("Card save error: \(error.localizedDescription)")
         }
     }
 
-    func openCollection() {
-        router.open(.collection)
+    func openCollection(showingCardID cardID: UUID? = nil) {
+        router.openCollection(showingCardID: cardID)
     }
     
     func openCamera() {
