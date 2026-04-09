@@ -9,13 +9,21 @@ struct CardView: View {
     let card: CardUIModel
     var style: Style = .compact
 
+    private static let captureDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en-US")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = "d MMMM yyyy"
+        return formatter
+    }()
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             card.carImage
                 .resizable()
                 .scaledToFill()
                 .frame(height: style == .compact ? 120 : 300)
-                .frame(maxWidth: style == .compact ? .infinity : 350)
+                .frame(maxWidth: style == .compact ? 160 : 350)
                 .clipped()
                 .cornerRadius(12)
 
@@ -65,8 +73,13 @@ struct CardView: View {
                 if let notes = card.notes, !notes.isEmpty {
                     Text(notes)
                         .font(style == .compact ? .caption : .title3)
-                        .lineLimit(style == .compact ? 2 : nil)
+                        .lineLimit(style == .compact ? 1 : nil)
                         .foregroundStyle(.primary)
+                }
+                if style == .expanded {
+                    Text("Added: \(card.date, formatter: Self.captureDateFormatter)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
@@ -86,7 +99,7 @@ struct CardView: View {
                 )
                 .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
         )
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: style == .expanded ? .infinity : 180)
     }
 }
 
@@ -116,66 +129,90 @@ struct CardView: View {
         ]
 
     let cards = [
-        CardUIModel(
-            id: 1,
-            carImage: Image(systemName: "car.fill"),
+        CardDTO(
+            id: "1",
+            imageBase64: MockCardImageBase64.alfa ?? "",
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
             numGrade: 742,
+            date: Date(timeIntervalSince1970: 1_726_444_800),
             year: 2022,
             power: 503,
-            notes: "Clean spec, spotted downtown.",
-            date: Date()
-        ),
-        CardUIModel(
-            id: 2,
-            carImage: Image(systemName: "car.fill"),
+            notes: "Stock look, clean condition.",
+            longitude: 37.6173,
+            latitude: 55.7558
+        ).toDataModel().asUIModel,
+        CardDTO(
+            id: "2",
+            imageBase64: MockCardImageBase64.porsche ?? "",
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
-            numGrade: 642,
+            numGrade: 742,
+            date: Date(timeIntervalSince1970: 1_726_444_800),
             year: 2022,
             power: 503,
-            notes: "Clean spec, spotted downtown.",
-            date: Date()
-        ),
-        CardUIModel(
-            id: 3,
-            carImage: Image(systemName: "car.fill"),
+            notes: "Stock look, clean condition.",
+            longitude: 37.6173,
+            latitude: 55.7558
+        ).toDataModel().asUIModel,
+        CardDTO(
+            id: "3",
+            imageBase64: MockCardImageBase64.alfa ?? "",
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
-            numGrade: 842,
+            numGrade: 742,
+            date: Date(timeIntervalSince1970: 1_726_444_800),
             year: 2022,
             power: 503,
-            notes: "Clean spec, spotted downtown.",
-            date: Date()
-        ),
-        CardUIModel(
-            id: 4,
-            carImage: Image(systemName: "car.fill"),
+            notes: "Stock look, clean condition.",
+            longitude: 37.6173,
+            latitude: 55.7558
+        ).toDataModel().asUIModel,
+        CardDTO(
+            id: "4",
+            imageBase64: MockCardImageBase64.alfa ?? "",
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
-            numGrade: 942,
+            numGrade: 742,
+            date: Date(timeIntervalSince1970: 1_726_444_800),
             year: 2022,
             power: 503,
-            notes: "Clean spec, spotted downtown.",
-            date: Date()
-        ),
-        CardUIModel(
-            id: 5,
-            carImage: Image(systemName: "car.fill"),
+            notes: "Stock look, clean condition.",
+            longitude: 37.6173,
+            latitude: 55.7558
+        ).toDataModel().asUIModel,
+        CardDTO(
+            id: "5",
+            imageBase64: MockCardImageBase64.bmw ?? "",
             make: "BMW",
             model: "M4 Competition",
             bodyType: .coupe,
-            numGrade: 342,
+            numGrade: 742,
+            date: Date(timeIntervalSince1970: 1_726_444_800),
             year: 2022,
             power: 503,
-            notes: "Clean spec, spotted downtown.",
-            date: Date()
-        ),
+            notes: "Stock look, clean condition.",
+            longitude: 37.6173,
+            latitude: 55.7558
+        ).toDataModel().asUIModel,
+        CardDTO(
+            id: "6",
+            imageBase64: MockCardImageBase64.bmw ?? "",
+            make: "BMW",
+            model: "M4 Competition",
+            bodyType: .coupe,
+            numGrade: 742,
+            date: Date(timeIntervalSince1970: 1_726_444_800),
+            year: 2022,
+            power: 503,
+            notes: "Stock look, clean condition.",
+            longitude: 37.6173,
+            latitude: 55.7558
+        ).toDataModel().asUIModel,
     ]
 
 
