@@ -39,7 +39,11 @@ final class CameraViewModel: ObservableObject {
         Task {
             do {
                 let photoData = try await cameraService.capturePhoto()
-                router.presentCardSettings(with: .draft(withPhotoData: photoData), photoData: photoData)
+                router.presentCardSettings(
+                    with: .draft(withPhotoData: photoData),
+                    draftDataModel: .draft(withPhotoData: photoData),
+                    photoData: photoData
+                )
             } catch {
                 print("Photo capture error: \(error.localizedDescription)")
             }

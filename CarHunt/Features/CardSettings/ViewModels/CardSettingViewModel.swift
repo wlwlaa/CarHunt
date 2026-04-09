@@ -45,24 +45,71 @@ struct CardFromImageResponse: Decodable {
 
 @MainActor
 final class CardSettingViewModel: ObservableObject {
+    enum RequiredField: Hashable {
+        case make
+        case model
+        case bodyType
+    }
+
     @Published var editableCard: CardUIModel
     @Published var isAutofillInProgress = false
+    @Published private(set) var invalidFieldsForFlash: Set<RequiredField> = []
+    @Published private(set) var validationFlashTrigger = 0
 
     private let router: any AppRouting
+    private let storage: CardStorage
+    private var draftDataModel: CardDataModel
     private let initialPhotoData: Data?
     private let cardAutofillService: CardAutofillServicing?
     private var didStartAutofill = false
 
     init(
         router: any AppRouting,
+        storage: CardStorage,
         initialCard: CardUIModel = .draft,
+        initialDataModel: CardDataModel? = nil,
         initialPhotoData: Data? = nil,
         cardAutofillService: CardAutofillServicing? = nil
     ) {
         self.router = router
+        self.storage = storage
         self.editableCard = initialCard
+        self.draftDataModel = initialDataModel ?? CardDataModel(
+            id: UUID(),
+            carImage: "car.fill",
+            make: "",
+            model: "",
+            bodyTypeRaw: BodyType.empty.rawValue,
+            numGrade: 0,
+            year: nil,
+            power: nil,
+            notes: nil,
+            date: initialCard.date,
+            longitude: initialCard.longitude,
+            latitude: initialCard.latitude
+        )
         self.initialPhotoData = initialPhotoData
         self.cardAutofillService = cardAutofillService
+    }
+
+    func addCard() {
+        let invalidFields = requiredFieldsValidationResult
+        guard invalidFields.isEmpty else {
+            invalidFieldsForFlash = invalidFields
+            validationFlashTrigger += 1
+            return
+        }
+
+        editableCard.make = normalizedMake
+        editableCard.model = normalizedModel
+        synchronizeDataModelWithEditableCard()
+
+        do {
+            try storage.addCard(draftDataModel)
+            openCollection()
+        } catch {
+            print("Card save error: \(error.localizedDescription)")
+        }
     }
 
     func openCollection() {
@@ -101,5 +148,50 @@ final class CardSettingViewModel: ObservableObject {
         editableCard.notes = response.notes
         editableCard.year = Int(response.year.trimmingCharacters(in: .whitespacesAndNewlines))
         editableCard.bodyType = BodyType(rawValue: response.bodyType) ?? .empty
+    }
+
+    private func synchronizeDataModelWithEditableCard() {
+        draftDataModel.make = editableCard.make.trimmingCharacters(in: .whitespacesAndNewlines)
+        draftDataModel.model = editableCard.model.trimmingCharacters(in: .whitespacesAndNewlines)
+        draftDataModel.bodyType = editableCard.bodyType
+        draftDataModel.numGrade = editableCard.numGrade
+        draftDataModel.year = editableCard.year
+        draftDataModel.power = editableCard.power
+        draftDataModel.notes = editableCard.notes?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .nilIfEmpty
+        draftDataModel.date = editableCard.date
+        draftDataModel.longitude = editableCard.longitude
+        draftDataModel.latitude = editableCard.latitude
+    }
+
+    private var normalizedMake: String {
+        editableCard.make.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var normalizedModel: String {
+        editableCard.model.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var requiredFieldsValidationResult: Set<RequiredField> {
+        var result: Set<RequiredField> = []
+
+        if normalizedMake.isEmpty {
+            result.insert(.make)
+        }
+        if normalizedModel.isEmpty {
+            result.insert(.model)
+        }
+        if editableCard.bodyType == .empty {
+            result.insert(.bodyType)
+        }
+
+        return result
+    }
+}
+
+private extension String {
+    var nilIfEmpty: String? {
+        isEmpty ? nil : self
     }
 }

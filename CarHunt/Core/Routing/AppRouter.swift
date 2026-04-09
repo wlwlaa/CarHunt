@@ -8,7 +8,7 @@ protocol AppRouting: AnyObject {
     func popToRoot()
 
     func present(_ route: AppRoute)
-    func presentCardSettings(with card: CardUIModel, photoData: Data?)
+    func presentCardSettings(with card: CardUIModel, draftDataModel: CardDataModel, photoData: Data?)
     func dismissPresented()
     func open(_ route: AppRoute)
 }
@@ -19,6 +19,7 @@ final class AppRouter: ObservableObject, AppRouting {
 
     @Published var presented: AppRoute?
     @Published var presentedCardSettingsCard: CardUIModel?
+    @Published var presentedCardSettingsDraftDataModel: CardDataModel?
     @Published var presentedCardSettingsPhotoData: Data?
     @Published var selectedTab: AppTab = .camera
 
@@ -38,19 +39,22 @@ final class AppRouter: ObservableObject, AppRouting {
     func present(_ route: AppRoute) {
         if route != .cardSettings {
             presentedCardSettingsCard = nil
+            presentedCardSettingsDraftDataModel = nil
             presentedCardSettingsPhotoData = nil
         }
         presented = route
     }
 
-    func presentCardSettings(with card: CardUIModel, photoData: Data?) {
+    func presentCardSettings(with card: CardUIModel, draftDataModel: CardDataModel, photoData: Data?) {
         presentedCardSettingsCard = card
+        presentedCardSettingsDraftDataModel = draftDataModel
         presentedCardSettingsPhotoData = photoData
         presented = .cardSettings
     }
 
     func dismissPresented() {
         presentedCardSettingsCard = nil
+        presentedCardSettingsDraftDataModel = nil
         presentedCardSettingsPhotoData = nil
         presented = nil
     }
