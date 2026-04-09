@@ -4,6 +4,7 @@ import SwiftData
 struct CollectionView: View {
     @StateObject private var viewModel: CardListViewModel
     @State private var selectedCard: CardUIModel?
+    @EnvironmentObject private var router: AppRouter
     
     private let columns = [
         GridItem(.flexible(), spacing: 12),
@@ -42,6 +43,13 @@ private extension CollectionView {
         .toolbarBackground(.hidden, for: .navigationBar)
         .task {
             viewModel.loadCards()
+            presentPendingCollectionCardIfNeeded()
+        }
+        .onChange(of: viewModel.cards) { _ in
+            presentPendingCollectionCardIfNeeded()
+        }
+        .onChange(of: router.pendingCollectionCardID) { _ in
+            presentPendingCollectionCardIfNeeded()
         }
         .alert(
             "Collection Error",
@@ -57,6 +65,14 @@ private extension CollectionView {
             CardDetailsModalView(card: card)
                 .presentationBackground(.clear)
         }
+    }
+
+    func presentPendingCollectionCardIfNeeded() {
+        guard let cardID = router.pendingCollectionCardID else { return }
+        guard let pendingCard = viewModel.cards.first(where: { $0.id == cardID }) else { return }
+
+        selectedCard = pendingCard.asUIModel(maxPixelSize: CardUIModel.ImagePixelSize.expanded)
+        router.pendingCollectionCardID = nil
     }
 
     var emptyCollectionScrollView: some View {
@@ -188,24 +204,30 @@ private extension CollectionView {
 private struct CardDetailsModalView: View {
     let card: CardUIModel
     @Environment(\.dismiss) private var dismiss
+    @State private var isVisible = false
+    @State private var cardTilt: Double = -8
 
     var body: some View {
         ZStack {
             Rectangle()
                 .fill(.ultraThinMaterial)
-                .overlay(Color.black.opacity(0.2))
+                .overlay(Color.black.opacity(isVisible ? 0.2 : 0))
                 .ignoresSafeArea()
                 .onTapGesture {
-                    dismiss()
+                    closeWithAnimation()
                 }
 
             CardView(card: card, style: .expanded)
                 .padding(.horizontal, 20)
                 .frame(maxWidth: 560)
+                .scaleEffect(isVisible ? 1 : 0.94)
+                .offset(y: isVisible ? 0 : 24)
+                .opacity(isVisible ? 1 : 0)
+                .rotationEffect(.degrees(cardTilt))
         }
         .overlay(alignment: .topTrailing) {
             Button {
-                dismiss()
+                closeWithAnimation()
             } label: {
                 Image(systemName: "xmark")
                     .font(.headline)
@@ -216,6 +238,24 @@ private struct CardDetailsModalView: View {
             .padding(.top, 18)
             .padding(.trailing, 18)
         }
+        .onAppear {
+            cardTilt = -8
+            withAnimation(.spring(response: 1.15, dampingFraction: 0.24, blendDuration: 0.18)) {
+                isVisible = true
+                cardTilt = 0
+            }
+        }
+    }
+
+    private func closeWithAnimation() {
+        withAnimation(.easeInOut(duration: 0.18)) {
+            isVisible = false
+        }
+
+        Task {
+            try? await Task.sleep(nanoseconds: 180_000_000)
+            dismiss()
+        }
     }
 }
 
@@ -223,4 +263,5 @@ private struct CardDetailsModalView: View {
 #Preview("Card grid") {
     @Previewable @Environment(\.modelContext) var modelContext
     CollectionView(context: modelContext)
+        .environmentObject(AppRouter())
 }
